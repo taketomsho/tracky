@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm,PasswordResetForm, SetPasswordForm
 from django.contrib.auth.models import User
 
 
@@ -53,8 +53,40 @@ class SignUpForm(UserCreationForm):
                 "placeholder": "Password check",
                 "class": "form-control"
             }
-        ))
+        ),
+        label='Emailアドレス'
+        )
 
+class VoltPasswordResetConfirmForm(SetPasswordForm):
+    new_password1 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "Password",
+                "class": "form-control"
+            }
+        ),
+        label='新しいパスワード'
+        )
+    new_password2 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "Password check",
+                "class": "form-control"
+            }
+        ),
+        label='新しいパスワードの確認'
+        )
+
+class VoltPasswordResetForm(PasswordResetForm):
+    email = forms.EmailField(
+        widget=forms.EmailInput(
+            attrs={
+                "placeholder": "john@company.com",
+                "class": "form-control"
+            }
+        ),
+        label='Emailアドレス'
+        )
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
