@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.home',  # Enable the inner home (home)
     'apps.authentication',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
