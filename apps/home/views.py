@@ -31,17 +31,6 @@ class OnlyYouMixin(UserPassesTestMixin):
         user = self.request.user
         return user.pk == self.kwargs['pk'] or user.is_superuser
 
-
-
-class DomainListView(OnlyYouMixin, ListView):
-
-    def get_queryset(self):
-        return Domain.objects.filter(user=self.kwargs['pk'])
-    
-    template_name = 'home/domain_list.html'
-    
-
-
 class DomainUpdate(OnlyYouMixin, generic.CreateView):
     model = Domain
     form_class = RegisterDomainForm
@@ -58,18 +47,17 @@ class DomainUpdate(OnlyYouMixin, generic.CreateView):
         domain.user_id = self.kwargs['pk']
         try:
             domain.save()
-            return redirect('domain_list', pk=self.kwargs['pk'])
+            return redirect('dashboard', pk=self.kwargs['pk'])
         except:
-            return redirect('domain_list', pk=self.kwargs['pk'])
+            return redirect('dashboard', pk=self.kwargs['pk'])
 
         
 
-class KeywordListView(OnlyYouMixin, ListView):
+class DashBoardView(OnlyYouMixin, ListView):
     def get_queryset(self):
         domain = Domain.objects.filter(user=self.kwargs['pk'])
         return Keyword.objects.filter(domain__in=domain)
-    # model = Keyword
-    template_name = 'home/keyword_list.html'
+    template_name = 'home/dashboard.html'
 
 
 class KeywordUpdate(OnlyYouMixin, generic.CreateView):
@@ -88,9 +76,9 @@ class KeywordUpdate(OnlyYouMixin, generic.CreateView):
         keyword.user_id = self.kwargs['pk']
         try:
             keyword.save()
-            return redirect('keyword_list', pk=self.kwargs['pk'])
+            return redirect('dashboard', pk=self.kwargs['pk'])
         except:
-            return redirect('keyword_list', pk=self.kwargs['pk'])
+            return redirect('dashboard', pk=self.kwargs['pk'])
 
 
 @login_required(login_url="/login/")
@@ -105,7 +93,6 @@ def pages(request):
     if load_template == 'admin':
         return HttpResponseRedirect(reverse('admin:index'))
     context['segment'] = load_template
-
     html_template = loader.get_template('home/' + load_template)
     return HttpResponse(html_template.render(context, request))
 

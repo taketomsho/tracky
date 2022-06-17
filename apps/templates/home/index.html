@@ -92,7 +92,7 @@
                     <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
                     {% if user.is_authenticated %}
                         <li class="nav-item me-2">
-                            <a href="/dashboard.html" class="nav-link">ダッシュボード</a>
+                            <a href="{% url 'dashboard' user.pk%}" class="nav-link">ダッシュボード</a>
                         </li>
                         <li class="nav-item me-2">
                             <a href="{% url 'domain_update' user.pk %}" class="nav-link">ドメインを登録する</a>
@@ -156,7 +156,7 @@
                                         <!-- End of Form -->
                                         <div class="form-group mb-4">
                                             <!-- Form -->
-                                            <label for="">ドメイン</label>
+                                            <label for="">URL</label>
                                             <div class="input-group">
                                                 <input type="" class="form-control" placeholder="分析したい記事URLを入力しましょう" id="email" autofocus required>
                                             </div>  
