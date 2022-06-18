@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from django.urls import path
-from .views import login_view, UserCreate, PasswordReset, PasswordResetDone, PasswordResetConfirm, PasswordResetComplete, EmailChange, EmailChangeDone, EmailChangeComplete, PasswordChange, PasswordChangeDone, UserCreateDone, UserCreateComplete
+from .views import login_view, UserCreate, PasswordReset, PasswordResetDone, PasswordResetConfirm, PasswordResetComplete, EmailChange, EmailChangeDone, EmailChangeComplete, PasswordChange, PasswordChangeDone, UserCreateDone, UserCreateComplete, Withdraw, WithdrawDone
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -22,5 +22,7 @@ urlpatterns = [
     path('email/change/', EmailChange.as_view(), name='email_change'),
     path('email/change/done/', EmailChangeDone.as_view(), name='email_change_done'),
     path('email/change/complete/<str:token>/', EmailChangeComplete.as_view(), name='email_change_complete'),
+    path('withdraw/', Withdraw.as_view(), name='withdraw'),
+    path('withdraw/done/', WithdrawDone, name='withdraw_done'),
 
 ]

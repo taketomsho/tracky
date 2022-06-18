@@ -202,3 +202,12 @@ class PasswordChange(PasswordChangeView):
 
 class PasswordChangeDone(PasswordChangeDoneView):
     template_name = 'accounts/password_change_co.html'
+
+class Withdraw(generic.TemplateView):
+    template_name = 'accounts/withdraw.html'
+
+def WithdrawDone(request):
+    user = request.user
+    user.is_active = False
+    user.save()
+    return render(request, 'accounts/withdraw_done.html')

@@ -152,3 +152,5 @@ STATICFILES_DIRS = (
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 AUTH_USER_MODEL = 'authentication.User'
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
