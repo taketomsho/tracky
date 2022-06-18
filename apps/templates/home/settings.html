@@ -63,7 +63,9 @@
                 <h2 class="h5 mb-4">パスワード</h2>
                 <p>複雑なパスワードにすることをお勧めします</p>
                 <div class="mt-3">
-                    <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">パスワード変更</button>
+                    <a href="{% url 'password_change' %}">
+                        <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">パスワード変更</button>
+                    </a>
                 </div>
             </div>
 

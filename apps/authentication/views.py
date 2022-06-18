@@ -7,8 +7,8 @@ Copyright (c) 2019 - present AppSeed.us
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from .forms import LoginForm, SignUpForm, VoltPasswordResetForm, VoltPasswordResetConfirmForm
-from django.contrib.auth.views import  PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+from .forms import LoginForm, SignUpForm, VoltPasswordResetForm, VoltPasswordResetConfirmForm, VoltPasswordChangeForm
+from django.contrib.auth.views import  PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView, PasswordChangeView, PasswordChangeDoneView
 from django.urls import reverse_lazy
 
 from .forms import EmailChangeForm
@@ -149,3 +149,11 @@ class EmailChangeComplete(LoginRequiredMixin, generic.TemplateView):
             request.user.email = new_email
             request.user.save()
             return super().get(request, **kwargs)
+
+class PasswordChange(PasswordChangeView):
+    form_class = VoltPasswordChangeForm
+    success_url = reverse_lazy('password_change_done')
+    template_name = 'accounts/password_change.html'
+
+class PasswordChangeDone(PasswordChangeDoneView):
+    template_name = 'accounts/password_change_co.html'
