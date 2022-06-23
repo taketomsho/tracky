@@ -10,7 +10,7 @@
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
     <div class="d-block mb-4 mb-md-0">
         <h2 class="h4">ダッシュボード</h2>
-        <p class="mb-0">ドメイン、キーワードの変化を見てみましょう</p>
+        <p class="mb-0">キーワードの順位変化を見てみましょう</p>
     </div>
 </div>
 
@@ -30,7 +30,15 @@
         <div class="card border-0 shadow mb-4">
 
             <div class="card-body">
-                <h2 class="h5 mb-4">キーワードとドメイン</h2>
+                <h2 class="h5 mb-4">キーワードとURLの順位</h2>
+
+                        <select id="category_select" required>
+                            <option value="すべて" id="all_menu">すべて</option>
+                            {% for domain in domain %}
+                            <option value="{{ domain.name }}">{{ domain.name }}</option>
+                            {% endfor %}
+                        </select>
+
 
                 <div class="table-responsive">
                     <table class="table table-centered table-nowrap mb-0 rounded">
@@ -44,7 +52,7 @@
                         </thead>
                         <tbody>
                             <!-- Item -->
-                            {% for keyword in object_list %}
+                            {% for keyword in keyword_list %}
                             <tr>
                                 <td class="fw-bold d-flex align-items-center">
                                     {{ keyword.name }}

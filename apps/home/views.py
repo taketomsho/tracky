@@ -54,10 +54,22 @@ class DomainUpdate(OnlyYouMixin, generic.CreateView):
         
 
 class DashBoardView(OnlyYouMixin, ListView):
-    def get_queryset(self):
-        domain = Domain.objects.filter(user=self.kwargs['pk'])
-        return Keyword.objects.filter(domain__in=domain)
+    # def get_queryset(self):
+    #     domain = Domain.objects.filter(user=self.kwargs['pk'])
+    #     return Keyword.objects.filter(domain__in=domain).filter(name__contains="お")
+    # template_name = 'home/dashboard.html'
     template_name = 'home/dashboard.html'
+    model = Keyword
+    queryset = Keyword.objects.all()
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        domain = Domain.objects.filter(user=self.kwargs['pk'])
+        # keyword = Keyword.objects.filter(domain__in=domain).filter(name__contains="お")
+        context["domain"] = domain
+        # context["keyword"] = keyword
+            
+        return context
+    
 
 
 class KeywordUpdate(OnlyYouMixin, generic.CreateView):
