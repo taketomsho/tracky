@@ -54,21 +54,22 @@ class DomainUpdate(OnlyYouMixin, generic.CreateView):
         
 
 class DashBoardView(OnlyYouMixin, ListView):
-    # def get_queryset(self):
-    #     domain = Domain.objects.filter(user=self.kwargs['pk'])
-    #     return Keyword.objects.filter(domain__in=domain).filter(name__contains="お")
-    # template_name = 'home/dashboard.html'
     template_name = 'home/dashboard.html'
     model = Keyword
     queryset = Keyword.objects.all()
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         domain = Domain.objects.filter(user=self.kwargs['pk'])
-        # keyword = Keyword.objects.filter(domain__in=domain).filter(name__contains="お")
         context["domain"] = domain
-        # context["keyword"] = keyword
             
         return context
+
+    def post(self, request, **kwargs):
+        keyword_pks = request.POST.getlist('delete')  # <input type="checkbox" name="delete"のnameに対応
+        print(keyword_pks)
+        print(Keyword.objects.filter(pk__in=keyword_pks))
+        Keyword.objects.filter(pk__in=keyword_pks).delete()
+        return redirect('dashboard', pk=self.kwargs['pk'])
     
 
 
@@ -92,6 +93,13 @@ class KeywordUpdate(OnlyYouMixin, generic.CreateView):
         except:
             return redirect('dashboard', pk=self.kwargs['pk'])
 
+# class KeywordDelete(generic.ListView):
+#     model = Keyword
+
+#     def post(self, request):
+#         keyword_pks = request.POST.getlist('delete')  # <input type="checkbox" name="delete"のnameに対応
+#         Keyword.objects.filter(pk__in=keyword_pks).delete()
+#         return redirect('dashboard', pk=self.kwargs['pk'])
 
 @login_required(login_url="/login/")
 def pages(request):

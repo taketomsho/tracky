@@ -52,10 +52,15 @@
                         </thead>
                         <tbody>
                             <!-- Item -->
+                            
                             {% for keyword in keyword_list %}
                             <tr>
                                 <td class="fw-bold d-flex align-items-center">
-                                    {{ keyword.name }}
+                                    <form action="" method="POST">        
+                                        {{ keyword.name }} -  <input type="checkbox" name="delete" value="{{ keyword.pk }}">
+                                        {% csrf_token %}
+                                        <button type="submit">削除</button>
+                                    </form>
                                 </td>
                                 <td>
                                     https://www.maneo.jp/media/ps-programming-school-recommended/
@@ -71,6 +76,7 @@
                                 </td>
                             </tr>
                             {% endfor %}
+                            
       
                         </tbody>
                     </table>
