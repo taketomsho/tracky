@@ -25,21 +25,48 @@
             </button>
     </div>
     
+    
     <div class="row">
+        
 
         <div class="card border-0 shadow mb-4">
 
             <div class="card-body">
-                <h2 class="h5 mb-4">キーワードとURLの順位</h2>
-
-                        <select id="category_select" required>
+                        {% comment %} TODO ドメインフィルターでキーワードを絞れるようにする {% endcomment %}
+                        {% comment %} <select id="category_select" required>
                             <option value="すべて" id="all_menu">すべて</option>
                             {% for domain in domain %}
                             <option value="{{ domain.name }}">{{ domain.name }}</option>
                             {% endfor %}
-                        </select>
+                        </select> {% endcomment %}
+                        <div class="table-responsive">
+                            <table class="table table-centered table-nowrap mb-0 rounded">
+                        <h2 class="h5 mb-4">ドメイン一覧</h2>
+                        <thead class="thead-light">
+                            <tr>
+                                <th class="border-0">ドメイン</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for domain in domain %}
+                            
+                            <tr>
+                                <td>
+                                    <form action="" method="POST">     
+                                    {{ domain.name }} -  <input type="checkbox" name="delete_domain" value="{{ domain.pk }}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle btn-sm">削除</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    </div>
+                        
 
-
+                <h2 class="h5 my-4">キーワードとURLの順位</h2>
                 <div class="table-responsive">
                     <table class="table table-centered table-nowrap mb-0 rounded">
                         <thead class="thead-light">
@@ -57,9 +84,9 @@
                             <tr>
                                 <td class="fw-bold d-flex align-items-center">
                                     <form action="" method="POST">        
-                                        {{ keyword.name }} -  <input type="checkbox" name="delete" value="{{ keyword.pk }}">
+                                        {{ keyword.name }} -  <input type="checkbox" name="delete_keyword" value="{{ keyword.pk }}">
                                         {% csrf_token %}
-                                        <button type="submit">削除</button>
+                                        <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle btn-sm">削除</button>
                                     </form>
                                 </td>
                                 <td>

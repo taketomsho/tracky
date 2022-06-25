@@ -65,13 +65,12 @@ class DashBoardView(OnlyYouMixin, ListView):
         return context
 
     def post(self, request, **kwargs):
-        keyword_pks = request.POST.getlist('delete')  # <input type="checkbox" name="delete"のnameに対応
-        print(keyword_pks)
-        print(Keyword.objects.filter(pk__in=keyword_pks))
+        keyword_pks = request.POST.getlist('delete_keyword')  # <input type="checkbox" name="delete_keyword"のnameに対応
         Keyword.objects.filter(pk__in=keyword_pks).delete()
-        return redirect('dashboard', pk=self.kwargs['pk'])
-    
+        domain_pks = request.POST.getlist('delete_domain')  # <input type="checkbox" name="delete_domain"のnameに対応
+        Domain.objects.filter(pk__in=domain_pks).delete()
 
+        return redirect('dashboard', pk=self.kwargs['pk'])
 
 class KeywordUpdate(OnlyYouMixin, generic.CreateView):
     model = Keyword
