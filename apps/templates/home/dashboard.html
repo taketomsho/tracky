@@ -73,6 +73,7 @@
                             <tr>
                                 <th class="border-0">キーワード</th>
                                 <th class="border-0">URL</th>
+                                <th class="border-0">日付</th>
                                 <th class="border-0">ランク</th>
                                 <th class="border-0 rounded-end">変動</th>
                             </tr>
@@ -80,20 +81,23 @@
                         <tbody>
                             <!-- Item -->
                             
-                            {% for keyword in keyword_list %}
+                            {% for rank in rank_list %}
                             <tr>
                                 <td class="fw-bold d-flex align-items-center">
                                     <form action="" method="POST">        
-                                        {{ keyword.name }} -  <input type="checkbox" name="delete_keyword" value="{{ keyword.pk }}">
+                                        {{ rank.keyword }} -  <input type="checkbox" name="delete_keyword" value="{{ rank.pk }}">
                                         {% csrf_token %}
                                         <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle btn-sm">削除</button>
                                     </form>
                                 </td>
                                 <td>
-                                    https://www.maneo.jp/media/ps-programming-school-recommended/
+                                    {{ rank.url }}
                                 </td>
                                 <td>
-                                    --
+                                    {{ rank.date }}
+                                </td>
+                                <td>
+                                    {{ rank.rank }}
                                 </td>
                                 <td class="text-success">
                                     <div class="d-flex align-items-center">

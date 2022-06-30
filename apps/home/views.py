@@ -14,9 +14,9 @@ from django.views import generic
 from django.views.generic.list import ListView
 
 
-from .models import Keyword, Domain
+from .models import Keyword, Domain, Rank
 from .forms import RegisterDomainForm, RegisterKeywordForm
-
+import datetime
 
 def index(request):
     context = {'segment': 'index'}
@@ -55,18 +55,28 @@ class DomainUpdate(OnlyYouMixin, generic.CreateView):
 
 class DashBoardView(OnlyYouMixin, ListView):
     template_name = 'home/dashboard.html'
-    model = Keyword
-    queryset = Keyword.objects.all()
+    model = Rank
+    queryset = Rank.objects.all()
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         domain = Domain.objects.filter(user=self.kwargs['pk'])
+        # rank = Rank.objects.filter(user=self.kwargs['pk'])
         context["domain"] = domain
+        # context["rank"] = rank
             
         return context
 
     def post(self, request, **kwargs):
-        keyword_pks = request.POST.getlist('delete_keyword')  # <input type="checkbox" name="delete_keyword"のnameに対応
-        Keyword.objects.filter(pk__in=keyword_pks).delete()
+        # まず最初にrankモデルのpkを取得する
+        rank_pks = request.POST.getlist('delete_keyword')  # <input type="checkbox" name="delete_keyword"のnameに対応
+        rank = Rank.objects.filter(pk__in=rank_pks)
+        # 取得したrankモデルを元にrankに紐づくキーワードを特定
+        keyword_list = []
+        for i in rank:
+            keyword_list.append(i.keyword)
+        # キーワードを削除
+        Keyword.objects.filter(name__in=keyword_list).delete()
+        # ドメインの場合はそのまま削除
         domain_pks = request.POST.getlist('delete_domain')  # <input type="checkbox" name="delete_domain"のnameに対応
         Domain.objects.filter(pk__in=domain_pks).delete()
 
@@ -86,8 +96,13 @@ class KeywordUpdate(OnlyYouMixin, generic.CreateView):
         """キーワードの登録"""
         keyword = form.save(commit=False)
         keyword.user_id = self.kwargs['pk']
+        today = datetime.date.today()
+        
         try:
+            rank = Rank(keyword = keyword, domain=keyword.domain, date=today)
             keyword.save()
+            rank.save() 
+           
             return redirect('dashboard', pk=self.kwargs['pk'])
         except:
             return redirect('dashboard', pk=self.kwargs['pk'])

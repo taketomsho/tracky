@@ -38,3 +38,19 @@ class Keyword(models.Model):
         ]
     def __str__(self):
         return self.name
+
+class Rank(models.Model):
+    domain = models.ForeignKey(Domain, on_delete=CASCADE)
+    keyword = models.ForeignKey(Keyword, on_delete=CASCADE)
+    url = models.CharField(max_length=500, null=True)
+    date = models.DateField(null=True)
+    rank = models.IntegerField(null=True)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["domain", "keyword", "date", "rank"],
+                name="rank_unique"
+            ),
+        ]
+    def __str__(self):
+        return str(self.rank)
