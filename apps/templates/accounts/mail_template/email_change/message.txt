@@ -1,0 +1,6 @@
+{{ user.username }} 様
+
+下記URLよりサイトにアクセスしてください。メールアドレスの変更が完了します。
+
+再設定用URL
+{{ protocol}}://{{ domain }}{% url 'email_change_complete' token %}
