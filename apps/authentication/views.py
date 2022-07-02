@@ -201,7 +201,7 @@ class PasswordChange(PasswordChangeView):
     template_name = 'accounts/password_change.html'
 
 class PasswordChangeDone(PasswordChangeDoneView):
-    template_name = 'accounts/password_change_co.html'
+    template_name = 'accounts/password_change_complete.html'
 
 class Withdraw(generic.TemplateView):
     template_name = 'accounts/withdraw.html'
