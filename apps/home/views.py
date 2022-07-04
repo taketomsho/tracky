@@ -99,7 +99,7 @@ class KeywordUpdate(OnlyYouMixin, generic.CreateView):
         today = datetime.date.today()
         
         try:
-            rank = Rank(keyword = keyword, domain=keyword.domain, date=today)
+            rank = Rank(keyword = keyword, domain=keyword.domain)
             keyword.save()
             rank.save() 
            

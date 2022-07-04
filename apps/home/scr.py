@@ -22,7 +22,7 @@ import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')  # 自分のsettings.py
 django.setup()
 
-from .models import Rank
+from .models import Rank, Keyword
 
 logger = getLogger(__name__)
 
@@ -83,13 +83,14 @@ class Scraper(object):
             return rank, url
 
 def main():
-    rank_list = Rank.objects.all()
     today = datetime.date.today()
-    
-    for rank in rank_list:
-        scr = Scraper(rank.keyword, rank.domain)
+    Rank.objects.filter(date=today).delete()
+
+    keyword_list = Keyword.objects.all()
+
+    for keyword in keyword_list:
+        scr = Scraper(keyword.name, keyword.domain)
         rank_score, url = scr.search_rank()
-        rank.rank = rank_score
-        rank.url = url
-        rank.date = today
-        rank.save()
+        Rank.objects.create(keyword=keyword, domain=keyword.domain, rank = rank_score, url=url, date=today)
+    
+    Rank.objects.filter(date__isnull=True).delete()
