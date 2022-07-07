@@ -22,11 +22,12 @@
                                 </h1>
                                 <br />
                                 <p>
-                                    {% if msg %}
-                                        {{ msg | safe }}
+                                    {% if form.errors %}
+                                        {{ form.non_field_errors }}
                                     {% else %}
                                         認証情報を設定してください
-                                    {% endif %}                                     
+                                    {% endif %}
+    
                                 </p> 
                             </div>
                             <form method="post" action="" class="mt-4">

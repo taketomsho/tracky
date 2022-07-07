@@ -53,7 +53,9 @@
                     </div>
                 </div>
                 <div class="mt-3">
-                    <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">メールアドレス変更</button>
+                    <a href="{% url 'email_change' %}">
+                        <button class="btn btn-gray-800 mt-2 animate-up-2">メールアドレス変更</button>
+                    </a>
                 </div>
             </div>
 
@@ -61,7 +63,9 @@
                 <h2 class="h5 mb-4">パスワード</h2>
                 <p>複雑なパスワードにすることをお勧めします</p>
                 <div class="mt-3">
-                    <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">パスワード変更</button>
+                    <a href="{% url 'password_change' %}">
+                        <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">パスワード変更</button>
+                    </a>
                 </div>
             </div>
 
@@ -111,7 +115,9 @@
                 <h2 class="h5 mb-4">退会処理</h2>
                 <p>本当に退会しますか？</p>
                 <div class="mt-3">
-                    <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">退会する</button>
+                    <a href="{% url 'withdraw' %}">
+                        <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">退会する</button>
+                    </a>
                 </div>
             </div>
 
