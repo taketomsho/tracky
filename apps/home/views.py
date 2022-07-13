@@ -13,6 +13,7 @@ from django.shortcuts import redirect, render, resolve_url
 from django.views import generic
 from django.views.generic.list import ListView
 
+import pandas as pd
 
 from .models import Keyword, Domain, Rank
 from .forms import RegisterDomainForm, RegisterKeywordForm
@@ -57,12 +58,18 @@ class DashBoardView(OnlyYouMixin, ListView):
     template_name = 'home/dashboard.html'
     model = Rank
     queryset = Rank.objects.all()
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         domain = Domain.objects.filter(user=self.kwargs['pk'])
         # rank = Rank.objects.filter(user=self.kwargs['pk'])
         context["domain"] = domain
-        # context["rank"] = rank
+
+        # 日付を1週間分取得
+        # date_index = pd.date_range(today, periods=7, freq="D")
+        date_list = [datetime.date.today() - datetime.timedelta(days=i) for i in range(10)]
+        print(date_list)
+        context["date_list"] = date_list
             
         return context
 

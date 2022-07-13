@@ -65,6 +65,59 @@
                     </table>
                     </div>
                         
+                
+                    <h2 class="h5 my-4">試作</h2>
+                    <div class="table-responsive">
+                        <table class="table table-centered table-nowrap mb-0 rounded">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th class="border-0">キーワード</th>
+                                    <th class="border-0">URL</th>
+                                    {% for date in date_list %}
+                                    <th class="border-0">{{ date }}</th>
+                                    {% endfor %}
+                                    <th class="border-0 rounded-end">変動</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Item -->
+                                
+                                {% for rank in rank_list %}
+                                <tr>
+                                    <td class="fw-bold d-flex align-items-center">
+                                        <form action="" method="POST">        
+                                            {{ rank.keyword }} -  <input type="checkbox" name="delete_keyword" value="{{ rank.pk }}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle btn-sm">削除</button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        {{ rank.url }}
+                                    </td>
+                                    {% for date in date_list %}
+                                    <td>
+                                        {% if rank.date == date%}
+                                        {{ rank.rank }}
+                                        {% endif %}
+                                    </td>
+                                    {% endfor %}
+                                    <td>
+                                        {{ rank.rank }}
+                                    </td>
+                                    <td class="text-success">
+                                        <div class="d-flex align-items-center">
+                                            <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg>                                   
+                                            <span class="fw-bold">1</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                
+          
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
                 <h2 class="h5 my-4">キーワードとURLの順位</h2>
                 <div class="table-responsive">
