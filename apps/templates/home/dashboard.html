@@ -128,7 +128,8 @@
                                 <th class="border-0">URL</th>
                                 <th class="border-0">日付</th>
                                 <th class="border-0">ランク</th>
-                                <th class="border-0 rounded-end">変動</th>
+                                <th class="border-0">変動</th>
+                                <th class="border-0 rounded-end">操作</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -137,11 +138,7 @@
                             {% for rank in rank_list %}
                             <tr>
                                 <td class="fw-bold d-flex align-items-center">
-                                    <form action="" method="POST">        
-                                        {{ rank.keyword }} -  <input type="checkbox" name="delete_keyword" value="{{ rank.pk }}">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle btn-sm">削除</button>
-                                    </form>
+                                    {{ rank.keyword }}
                                 </td>
                                 <td>
                                     {{ rank.url }}
@@ -158,6 +155,13 @@
                                         <span class="fw-bold">1</span>
                                     </div>
                                 </td>
+                                <td>
+                                    <form action="" method="POST">        
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle btn-sm">削除</button>
+                                    </form>
+                                </td>
+
                             </tr>
                             {% endfor %}
                             

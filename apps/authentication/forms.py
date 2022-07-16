@@ -152,3 +152,15 @@ class VoltPasswordChangeForm(PasswordChangeForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
+
+class NicknameForm(forms.Form):
+    nick_name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "ニックネームを入力",
+                "class": "form-control"
+            }
+        ))
+    class Meta:
+        model = User
+        fields = ('nick_name')

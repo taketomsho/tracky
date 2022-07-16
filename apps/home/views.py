@@ -7,7 +7,7 @@ from django import template
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from django.urls import reverse
+from django.urls import reverse,reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import redirect, render, resolve_url
 from django.views import generic
@@ -17,6 +17,7 @@ import pandas as pd
 
 from .models import Keyword, Domain, Rank
 from .forms import RegisterDomainForm, RegisterKeywordForm
+from apps.authentication.forms import NicknameForm
 import datetime
 
 def index(request):
@@ -88,6 +89,36 @@ class DashBoardView(OnlyYouMixin, ListView):
         Domain.objects.filter(pk__in=domain_pks).delete()
 
         return redirect('dashboard', pk=self.kwargs['pk'])
+
+
+class SettingsView(OnlyYouMixin, generic.FormView):
+    form_class = NicknameForm
+    template_name = 'home/settings.html'
+    success_url = reverse_lazy('settings')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['nick_name'] = self.request.user.nick_name
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['segment'] = "settings"
+        return context
+
+    def form_valid(self, form):
+        
+        user = self.request.user
+        user.nick_name = form.cleaned_data.get('nick_name')
+        user.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('settings', kwargs={"pk":self.kwargs['pk']})
+
+
+    
+
 
 class KeywordUpdate(OnlyYouMixin, generic.CreateView):
     model = Keyword
