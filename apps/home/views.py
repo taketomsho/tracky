@@ -26,14 +26,7 @@ def index(request):
     html_template = loader.get_template('home/index.html')
     return HttpResponse(html_template.render(context, request))
 
-class OnlyYouMixin(UserPassesTestMixin):
-    raise_exception = True
-
-    def test_func(self):
-        user = self.request.user
-        return user.pk == self.kwargs['pk'] or user.is_superuser
-
-class DomainUpdate(OnlyYouMixin, generic.CreateView):
+class DomainCreate(generic.CreateView):
     model = Domain
     form_class = RegisterDomainForm
     template_name = 'home/domain_form.html'
@@ -46,52 +39,44 @@ class DomainUpdate(OnlyYouMixin, generic.CreateView):
     def form_valid(self, form):
         """ドメインの登録"""
         domain = form.save(commit=False)
-        domain.user_id = self.kwargs['pk']
+        domain.user = self.request.user
         try:
             domain.save()
-            return redirect('dashboard', pk=self.kwargs['pk'])
+            return redirect('dashboard')
         except:
-            return redirect('dashboard', pk=self.kwargs['pk'])
+            return redirect('dashboard')
 
-        
 
-class DashBoardView(OnlyYouMixin, ListView):
+
+
+
+class DashBoardView(ListView):
     template_name = 'home/dashboard.html'
-    model = Rank
-    queryset = Rank.objects.all()
+    model = Keyword
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        domain = Domain.objects.filter(user=self.kwargs['pk'])
-        # rank = Rank.objects.filter(user=self.kwargs['pk'])
-        context["domain"] = domain
+    def get_queryset(self):
+        domin_list = Domain.objects.filter(user = self.request.user)
+        keyword_list = Keyword.objects.filter(domain__in = domin_list)
+        queryset = Rank.objects.filter(keyword__in = keyword_list)
+        return queryset
+    
+def delete(self, request, **kwargs):
+    # まず最初にrankモデルのpkを取得する
+    rank_pks = request.POST.getlist('delete_keyword')  # <input type="checkbox" name="delete_keyword"のnameに対応
+    rank = Rank.objects.filter(pk__in=rank_pks)
+    # 取得したrankモデルを元にrankに紐づくキーワードを特定
+    keyword_list = []
+    for i in rank:
+        keyword_list.append(i.keyword)
+    # キーワードを削除
+    Keyword.objects.filter(name__in=keyword_list).delete()
+    # ドメインの場合はそのまま削除
+    domain_pks = request.POST.getlist('delete_domain')  # <input type="checkbox" name="delete_domain"のnameに対応
+    Domain.objects.filter(pk__in=domain_pks).delete()
 
-        # 日付を1週間分取得
-        # date_index = pd.date_range(today, periods=7, freq="D")
-        date_list = [datetime.date.today() - datetime.timedelta(days=i) for i in range(10)]
-        print(date_list)
-        context["date_list"] = date_list
-            
-        return context
+    return redirect('dashboard', pk=self.kwargs['pk'])
 
-    def post(self, request, **kwargs):
-        # まず最初にrankモデルのpkを取得する
-        rank_pks = request.POST.getlist('delete_keyword')  # <input type="checkbox" name="delete_keyword"のnameに対応
-        rank = Rank.objects.filter(pk__in=rank_pks)
-        # 取得したrankモデルを元にrankに紐づくキーワードを特定
-        keyword_list = []
-        for i in rank:
-            keyword_list.append(i.keyword)
-        # キーワードを削除
-        Keyword.objects.filter(name__in=keyword_list).delete()
-        # ドメインの場合はそのまま削除
-        domain_pks = request.POST.getlist('delete_domain')  # <input type="checkbox" name="delete_domain"のnameに対応
-        Domain.objects.filter(pk__in=domain_pks).delete()
-
-        return redirect('dashboard', pk=self.kwargs['pk'])
-
-
-class SettingsView(OnlyYouMixin, generic.FormView):
+class SettingsView(generic.FormView):
     form_class = NicknameForm
     template_name = 'home/settings.html'
     success_url = reverse_lazy('settings')
@@ -114,13 +99,9 @@ class SettingsView(OnlyYouMixin, generic.FormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('settings', kwargs={"pk":self.kwargs['pk']})
+        return reverse_lazy('settings')
 
-
-    
-
-
-class KeywordUpdate(OnlyYouMixin, generic.CreateView):
+class KeywordCreate(generic.CreateView):
     model = Keyword
     form_class = RegisterKeywordForm
     template_name = 'home/keyword_form.html'
@@ -133,7 +114,7 @@ class KeywordUpdate(OnlyYouMixin, generic.CreateView):
     def form_valid(self, form):
         """キーワードの登録"""
         keyword = form.save(commit=False)
-        keyword.user_id = self.kwargs['pk']
+        keyword.user = self.request.user
         today = datetime.date.today()
         
         try:
@@ -141,17 +122,10 @@ class KeywordUpdate(OnlyYouMixin, generic.CreateView):
             keyword.save()
             rank.save() 
            
-            return redirect('dashboard', pk=self.kwargs['pk'])
+            return redirect('dashboard')
         except:
-            return redirect('dashboard', pk=self.kwargs['pk'])
+            return redirect('dashboard')
 
-# class KeywordDelete(generic.ListView):
-#     model = Keyword
-
-#     def post(self, request):
-#         keyword_pks = request.POST.getlist('delete')  # <input type="checkbox" name="delete"のnameに対応
-#         Keyword.objects.filter(pk__in=keyword_pks).delete()
-#         return redirect('dashboard', pk=self.kwargs['pk'])
 
 @login_required(login_url="/login/")
 def pages(request):

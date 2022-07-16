@@ -13,17 +13,6 @@
         <p class="mb-0">キーワードの順位変化を見てみましょう</p>
     </div>
 </div>
-
-    <div class="py-4">
-            <button onclick="location.href='{% url "domain_update" user.pk %}'" class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                ドメインを追加する
-            </button>
-            <button onclick="location.href='{% url "keyword_update" user.pk %}'" class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                キーワードを追加する
-            </button>
-    </div>
     
     
     <div class="row">
@@ -32,92 +21,6 @@
         <div class="card border-0 shadow mb-4">
 
             <div class="card-body">
-                        {% comment %} TODO ドメインフィルターでキーワードを絞れるようにする {% endcomment %}
-                        {% comment %} <select id="category_select" required>
-                            <option value="すべて" id="all_menu">すべて</option>
-                            {% for domain in domain %}
-                            <option value="{{ domain.name }}">{{ domain.name }}</option>
-                            {% endfor %}
-                        </select> {% endcomment %}
-                        <div class="table-responsive">
-                            <table class="table table-centered table-nowrap mb-0 rounded">
-                        <h2 class="h5 mb-4">ドメイン一覧</h2>
-                        <thead class="thead-light">
-                            <tr>
-                                <th class="border-0">ドメイン</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for domain in domain %}
-                            
-                            <tr>
-                                <td>
-                                    <form action="" method="POST">     
-                                    {{ domain.name }} -  <input type="checkbox" name="delete_domain" value="{{ domain.pk }}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle btn-sm">削除</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    </div>
-                        
-                
-                    <h2 class="h5 my-4">試作</h2>
-                    <div class="table-responsive">
-                        <table class="table table-centered table-nowrap mb-0 rounded">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th class="border-0">キーワード</th>
-                                    <th class="border-0">URL</th>
-                                    {% for date in date_list %}
-                                    <th class="border-0">{{ date }}</th>
-                                    {% endfor %}
-                                    <th class="border-0 rounded-end">変動</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Item -->
-                                
-                                {% for rank in rank_list %}
-                                <tr>
-                                    <td class="fw-bold d-flex align-items-center">
-                                        <form action="" method="POST">        
-                                            {{ rank.keyword }} -  <input type="checkbox" name="delete_keyword" value="{{ rank.pk }}">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle btn-sm">削除</button>
-                                        </form>
-                                    </td>
-                                    <td>
-                                        {{ rank.url }}
-                                    </td>
-                                    {% for date in date_list %}
-                                    <td>
-                                        {% if rank.date == date%}
-                                        {{ rank.rank }}
-                                        {% endif %}
-                                    </td>
-                                    {% endfor %}
-                                    <td>
-                                        {{ rank.rank }}
-                                    </td>
-                                    <td class="text-success">
-                                        <div class="d-flex align-items-center">
-                                            <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg>                                   
-                                            <span class="fw-bold">1</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                                
-          
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
 
                 <h2 class="h5 my-4">キーワードとURLの順位</h2>
                 <div class="table-responsive">
@@ -128,14 +31,15 @@
                                 <th class="border-0">URL</th>
                                 <th class="border-0">日付</th>
                                 <th class="border-0">ランク</th>
-                                <th class="border-0">変動</th>
-                                <th class="border-0 rounded-end">操作</th>
+                                <th class="border-0 rounded-end">変動</th>
                             </tr>
                         </thead>
                         <tbody>
                             <!-- Item -->
+
+
                             
-                            {% for rank in rank_list %}
+                            {% for rank in object_list %}
                             <tr>
                                 <td class="fw-bold d-flex align-items-center">
                                     {{ rank.keyword }}
@@ -155,12 +59,6 @@
                                         <span class="fw-bold">1</span>
                                     </div>
                                 </td>
-                                <td>
-                                    <form action="" method="POST">        
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle btn-sm">削除</button>
-                                    </form>
-                                </td>
 
                             </tr>
                             {% endfor %}
@@ -170,59 +68,107 @@
                     </table>
                 </div>
             </div>
-            <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination mb-0">
-                        <li class="page-item">
-                            <a class="page-link" href="#">Previous</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">1</a>
-                        </li>
-                        <li class="page-item active">
-                            <a class="page-link" href="#">2</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">3</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">4</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">5</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Next</a>
-                        </li>
-                    </ul>
-                </nav>
-                <div class="fw-normal small mt-4 mt-lg-0">Showing <b>5</b> out of <b>25</b> entries</div>
-            </div>
+        </div>
       
+
+        <div class="card border-0 shadow mb-4">
+
+            <div class="card-body">
+
+                <h2 class="h5 my-4">ドメイン一覧</h2>
+
+    
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th class="border-gray-200">#</th>
+                            <th class="border-gray-200">Domain</th>
+                            <th class="border-gray-200">登録日時</th>						
+                            <th class="border-gray-200">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Item -->
+                        <tr>
+                            <td>
+                                <a href="#" class="fw-bold">
+                                    456478
+                                </a>
+                            </td>
+                            <td>
+                                <span class="fw-normal">Platinum Subscription Plan</span>
+                            </td>
+                            <td><span class="fw-normal">1 May 2020</span></td>                        
+                            <td>
+                                <form action="" method="POST">        
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle btn-sm">削除</button>
+                                </form>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
+                    <button onclick="location.href='{% url "domain_create" %}'" class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        ドメインを追加する
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <div class="col-12 mb-4">
-            <div class="card bg-yellow-100 border-0 shadow">
-                <div class="card-header d-sm-flex flex-row align-items-center flex-0">
-                    <div class="d-block mb-3 mb-sm-0">
-                        <div class="fs-5 fw-normal mb-2">グラフ</div>
-                        <h2 class="fs-3 fw-extrabold">$10,567</h2>
-                        <div class="small mt-2"> 
-                            <span class="fw-normal me-2">Yesterday</span>                              
-                            <span class="fas fa-angle-up text-success"></span>                                   
-                            <span class="text-success fw-bold">10.57%</span>
-                        </div>
-                    </div>
-                    <div class="d-flex ms-auto">
-                        <a href="#" class="btn btn-secondary text-dark btn-sm me-2">Month</a>
-                        <a href="#" class="btn btn-dark btn-sm me-3">Week</a>
-                    </div>
+
+        <div class="card border-0 shadow mb-4">
+
+            <div class="card-body">
+                <h2 class="h5 my-4">キーワード一覧</h2>
+
+    
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th class="border-gray-200">#</th>
+                            <th class="border-gray-200">Keyword</th>						
+                            <th class="border-gray-200">Domain</th>
+                            <th class="border-gray-200">登録日時</th>						
+                            <th class="border-gray-200">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Item -->
+                        <tr>
+                            <td>
+                                <a href="#" class="fw-bold">
+                                    456478
+                                </a>
+                            </td>
+                            <td>
+                                <span class="fw-normal">Platinum Subscription Plan</span>
+                            </td>
+                            <td><span class="fw-normal">1 May 2020</span></td>                        
+                            <td>
+                                <form action="" method="POST">        
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle btn-sm">削除</button>
+                                </form>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
+
+                    <button onclick="location.href='{% url "keyword_create" %}'" class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        キーワードを追加する
+                    </button>
+
                 </div>
-                <div class="card-body p-2">
-                    <div class="ct-chart-sales-value ct-double-octave ct-series-g"></div>
-                </div>
-            </div>
         </div>
+        </div>
+
 
 {% endblock content %}
 
