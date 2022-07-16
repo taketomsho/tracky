@@ -94,12 +94,6 @@
                         <li class="nav-item me-2">
                             <a href="{% url 'dashboard' user.pk%}" class="nav-link">ダッシュボード</a>
                         </li>
-                        <li class="nav-item me-2">
-                            <a href="{% url 'domain_update' user.pk %}" class="nav-link">ドメインを登録する</a>
-                        </li>
-                        <li class="nav-item me-2">
-                            <a href="{% url 'keyword_update' user.pk %}" class="nav-link">キーワードを登録する</a>
-                        </li>
                             {% if user.is_superuser %}
                                 <li class="nav-item me-2">
                                     <a href="/admin/authentication/user/" class="nav-link">Admin</a>
@@ -240,84 +234,30 @@
     </main>
 
     <footer class="footer py-6 bg-gray-800 text-white">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <img class="navbar-brand-dark mb-4" height="35" src="{{ ASSETS_ROOT }}/img/brand/light.svg" alt="Logo light">
-                    <p>Volt is a Premium Bootstrap 5 Admin Dashboard bringing together beautiful UI/UX design and functional elements.</p>
-                    <ul class="social-buttons mb-5 mb-lg-0">
-                        <li>
-                            <a href="https://twitter.com/themesberg" aria-label="twitter social link" class="icon-white me-2">
-                                <span class="fab fa-twitter"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://www.facebook.com/themesberg/" class="icon-white me-2" aria-label="facebook social link">
-                                <span class="fab fa-facebook"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://github.com/themesberg" aria-label="github social link" class="icon-white me-2">
-                                <span class="fab fa-github"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://dribbble.com/themesberg" class="icon-white" aria-label="dribbble social link" >
-                                <span class="fab fa-dribbble"></span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-6 col-md-2 mb-5 mb-lg-0">
-                    <span class="h5">Themesberg</span>
-                    <ul class="links-vertical mt-2">
-                        <li><a target="_blank" href="https://themesberg.com/blog">Blog</a></li>
-                        <li><a target="_blank" href="https://themesberg.com/products">Products</a></li>
-                        <li><a target="_blank" href="https://themesberg.com/about">About Us</a></li>
-                        <li><a target="_blank" href="https://themesberg.com/contact">Contact Us</a></li>
-                    </ul>
-                </div>
-                <div class="col-6 col-md-2 mb-5 mb-lg-0">
-                    <span class="h5">Other</span>
-                    <ul class="links-vertical mt-2">
-                        <li><a href="https://themesberg.com/docs/volt-bootstrap-5-dashboard/getting-started/quick-start/" target="_blank">Docs
-                                <span class="badge badge-sm bg-secondary text-dark ms-2">v1.4</span></a></li>
-                        <li><a href="https://themesberg.com/docs/volt-bootstrap-5-dashboard/getting-started/changelog/" target="_blank">Changelog</a></li>
-                        <li><a target="_blank" href="https://themesberg.com/licensing">License</a>
-                        </li>
-                        <li><a target="_blank" href="https://themesberg.com/contact">Support</a></li>
-                    </ul>
-                </div>
-                <div class="col-12 col-md-4 mb-5 mb-lg-0">
-                    <span class="h5 mb-3 d-block">Subscribe</span>
-                    <form action="#">
-                        <div class="form-row mb-2">
-                            <div class="col-12">
-                                <input type="email" class="form-control mb-2" placeholder="example@company.com" name="email" aria-label="Subscribe form" required>
-                            </div>
-                            <div class="col-12 d-grid">
-                                <button type="submit" class="btn btn-secondary" data-loading-text="Sending">
-                                    <span>Subscribe</span>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                    <p class="text-muted font-small m-0">We’ll never share your details. See our <a class="text-white" href="#">Privacy Policy</a></p>
-                </div>
+        <div class="container d-flex justify-content-center">
+            <div class="row my-5">
+
+              <div class="col-md-6">
+                <a class="btn btn-block btn-social btn-facebook d-inline-flex" href="https://www.facebook.com/share.php?u={{ request.scheme }}://{{ request.get_host }}{{ request.path }}" target="_blank">
+                    <svg class="icon icon-xxs me-2" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook-f" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"></path></svg>
+                    Share
+                </a>
+              </div>
+
+              <div class="col-md-6">
+                <a class="btn btn-block btn-social btn-twitter d-inline-flex" href="https://twitter.com/intent/tweet?url={{ request.scheme }}://{{ request.get_host }}{{ request.path }}" target="_blank">
+                    <svg class="icon icon-xxs me-2" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg>
+                    Share
+                </a>
+              </div>
             </div>
-            <hr class="bg-gray-700 my-5">
-            <div class="row">
-                <div class="col mb-md-0">
-                    <a href="https://themesberg.com" target="_blank" class="d-flex justify-content-center">
-                        <img src="{{ ASSETS_ROOT }}/img/themesberg-logo-alt.svg" height="35" class="mb-4" alt="Themesberg Logo">
-                    </a>
-                <div class="d-flex text-center justify-content-center align-items-center" role="contentinfo">
-                    <p class="fw-normal font-small mb-0">
-                        &copy; Themesberg 2019-<span class="current-year">2020</span> - coded by <a target="_blank" href="https://appseed.us">AppSeed</a>.</p>
-                    </div>
-                </div>
+          </div>
+
+            <div class="d-flex flex-row container footer justify-content-center">
+              <p class="text-center text-white">Copyright 2022 WW inc. All Rights Reserved. | </p>
+              <p class="text-center text-white"> <a href="https://wwcorp.co.jp/" class="text-white">運営会社</a>|</p>
+              <p class="text-center text-white"> <a href="https://wwcorp.co.jp/contact/" class="text-white">お問い合わせ</a>|</p>
             </div>
-        </div>
     </footer>
 
     {% include 'includes/scripts.html' %}
