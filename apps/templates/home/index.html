@@ -92,7 +92,7 @@
                     <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
                     {% if user.is_authenticated %}
                         <li class="nav-item me-2">
-                            <a href="{% url 'dashboard' user.pk%}" class="nav-link">ダッシュボード</a>
+                            <a href="{% url 'dashboard'%}" class="nav-link">ダッシュボード</a>
                         </li>
                             {% if user.is_superuser %}
                                 <li class="nav-item me-2">

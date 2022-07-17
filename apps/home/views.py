@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse,reverse_lazy
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.shortcuts import redirect, render, resolve_url
 from django.views import generic
 from django.views.generic.list import ListView
@@ -26,7 +26,7 @@ def index(request):
     html_template = loader.get_template('home/index.html')
     return HttpResponse(html_template.render(context, request))
 
-class DomainCreate(generic.CreateView):
+class DomainCreate(LoginRequiredMixin,generic.CreateView):
     model = Domain
     form_class = RegisterDomainForm
     template_name = 'home/domain_form.html'
@@ -50,15 +50,27 @@ class DomainCreate(generic.CreateView):
 
 
 
-class DashBoardView(ListView):
+class DashBoardView(LoginRequiredMixin,ListView):
     template_name = 'home/dashboard.html'
     model = Keyword
 
     def get_queryset(self):
-        domin_list = Domain.objects.filter(user = self.request.user)
-        keyword_list = Keyword.objects.filter(domain__in = domin_list)
+        domain_list = Domain.objects.filter(user = self.request.user)
+        keyword_list = Keyword.objects.filter(domain__in = domain_list)
         queryset = Rank.objects.filter(keyword__in = keyword_list)
         return queryset
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        domain_list = Domain.objects.filter(user = self.request.user)
+        keyword_list = Keyword.objects.filter(domain__in = domain_list)
+        context['domain_list'] = domain_list
+        context['keyword_list'] = keyword_list
+
+        for keyword in keyword_list:
+            rank_list = Rank.objects.filter(keyword = keyword)
+
+        return context
     
 def delete(self, request, **kwargs):
     # まず最初にrankモデルのpkを取得する
@@ -76,7 +88,7 @@ def delete(self, request, **kwargs):
 
     return redirect('dashboard', pk=self.kwargs['pk'])
 
-class SettingsView(generic.FormView):
+class SettingsView(LoginRequiredMixin, generic.FormView):
     form_class = NicknameForm
     template_name = 'home/settings.html'
     success_url = reverse_lazy('settings')
@@ -101,7 +113,7 @@ class SettingsView(generic.FormView):
     def get_success_url(self):
         return reverse_lazy('settings')
 
-class KeywordCreate(generic.CreateView):
+class KeywordCreate(LoginRequiredMixin, generic.CreateView):
     model = Keyword
     form_class = RegisterKeywordForm
     template_name = 'home/keyword_form.html'
