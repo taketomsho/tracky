@@ -20,3 +20,7 @@ class RegisterKeywordForm(forms.ModelForm):
             "domain":"ドメイン名",
             "name":"キーワード名",
         }
+
+class AnalysisForm(forms.Form):
+    keyword = forms.CharField(label='キーワード')
+    url = forms.CharField(label='分析対象のURL')

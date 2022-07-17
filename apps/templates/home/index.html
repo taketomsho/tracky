@@ -92,13 +92,13 @@
                     <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
                     {% if user.is_authenticated %}
                         <li class="nav-item me-2">
-                            <a href="{% url 'dashboard' user.pk%}" class="nav-link">ダッシュボード</a>
+                            <a href="{% url 'home:dashboard' user.pk%}" class="nav-link">ダッシュボード</a>
                         </li>
                         <li class="nav-item me-2">
-                            <a href="{% url 'domain_update' user.pk %}" class="nav-link">ドメインを登録する</a>
+                            <a href="{% url 'home:domain_update' user.pk %}" class="nav-link">ドメインを登録する</a>
                         </li>
                         <li class="nav-item me-2">
-                            <a href="{% url 'keyword_update' user.pk %}" class="nav-link">キーワードを登録する</a>
+                            <a href="{% url 'home:keyword_update' user.pk %}" class="nav-link">キーワードを登録する</a>
                         </li>
                             {% if user.is_superuser %}
                                 <li class="nav-item me-2">
@@ -138,14 +138,30 @@
                         <!-- Button Modal -->
                         <div class="row">
 
-                            <div class="col-6 text-center">
+  
 
-                                <form method="post" action="" class="mt-4">
-                                        
+                            <div class="col-6 text-center">
+                                <form action="" , method="POST", class="form-group" onSubmit='FormSend()'>
                                     {% csrf_token %}
+                                    {% for item in form %}
+                                    <div class="form-group">
+                                      <div class="text-center">
+                                        <label for="{{item.id_for_label}}">{{item.label}}</label>
+                                      </div>
+                                      <input type="{{item.field.widget.input_type}}" class="form-control" {% if item.field.required %}required{% endif %} name="{{item.name}}" id="{{item.id_for_label}}">
+                                    </div>
+                                    {% endfor %}
+                                    <div class="text-center my-5">
+                                      <button type='submit' class='btn btn-secondary d-inline-flex align-items-center me-4'>分析してみる</button>
+                                    </div>
+                                  </form>
+                            
+                                {% comment %} <form method="post" action="" class="mt-4">
+                                        
+                                    {% csrf_token %} 
 
                                     <!-- Form -->
-                                    <div class="form-group">
+                                     <div class="form-group">
                                     
                                         <div class="form-group mb-4">
                                             <label for="">キーワード</label>
@@ -161,14 +177,14 @@
                                                 <input type="" class="form-control" placeholder="分析したい記事URLを入力しましょう" id="email" autofocus required>
                                             </div>  
                                         </div>
-                                    </div>
+                                    </div> 
                                     
                                     <div class="d-flex align-items-center justify-content-center mb-5">
                                         <button type="submit" class="btn btn-secondary d-inline-flex align-items-center me-4">
                                             分析を実行する
                                         </button>
-                                    </div>
-                                </form>
+                                    </div> 
+                                </form> {% endcomment %}
 
                             </div>
                             <div class="col-lg-6 order-lg-1">
