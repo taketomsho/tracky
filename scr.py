@@ -78,7 +78,7 @@ class Scraper(object):
         
         # rankが0のままの場合は圏外を返す
         if rank == 0:
-            return 0, None
+            return None, None
         else:
             return rank, url
 
@@ -91,7 +91,35 @@ def main():
     for keyword in keyword_list:
         scr = Scraper(keyword.name, keyword.domain)
         rank_score, url = scr.search_rank()
-        Rank.objects.create(keyword=keyword, domain=keyword.domain, rank = rank_score, url=url, date=today)
+        queryset = Rank.objects.filter(date=today - datetime.timedelta(days=7)).filter(keyword=keyword)
+        if queryset.first() is None:
+            up_weekly = None
+        else:
+            rank_last_week = queryset.first().rank
+            if rank_last_week is None or rank_score is None:
+                up_weekly = None
+            else:
+                up_weekly = rank_last_week - rank_score
+        Rank.objects.create(keyword=keyword, domain=keyword.domain, rank = rank_score, up_weekly = up_weekly, url=url, date=today)
+    
+    Rank.objects.filter(date__isnull=True).delete()
+
+def maketestdata(date):
+    today = date
+    Rank.objects.filter(date=today).delete()
+
+    keyword_list = Keyword.objects.all()
+
+    for keyword in keyword_list:
+        scr = Scraper(keyword.name, keyword.domain)
+        rank_score, url = scr.search_rank()
+        rank_last_week = Rank.objects.filter(date=today - datetime.timedelta(days=7)).filter(keyword=keyword)
+        if rank_last_week.first() is None:
+            up_weekly = None
+        else:
+            
+            up_weekly = rank_last_week.first().rank - rank_score
+        Rank.objects.create(keyword=keyword, domain=keyword.domain, rank = rank_score, up_weekly = up_weekly, url=url, date=today)
     
     Rank.objects.filter(date__isnull=True).delete()
 

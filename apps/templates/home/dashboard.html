@@ -51,12 +51,25 @@
                                     {{ rank.date }}
                                 </td>
                                 <td>
+                                    {% if rank.rank is None %}
+                                    圏外
+                                    {% else %}
                                     {{ rank.rank }}
+                                    {% endif %}
                                 </td>
-                                <td class="text-success">
+                                <td>
                                     <div class="d-flex align-items-center">
-                                        <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg>                                   
-                                        <span class="fw-bold">1</span>
+                                        {% if rank.up_weekly is None %}
+                                        <span class="text-warning">計算不可</span>
+                                        {% else %}
+                                            {% if rank.up_weekly >= 0 %}
+                                            <svg class="icon icon-xs me-1 text-success" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg>                                   
+                                            <span class="fw-bold text-success">{{rank.up_weekly}}</span>
+                                            {% else %}
+                                            <svg class="icon icon-xs me-1 text-danger" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                            <span class="fw-bold text-danger">{{rank.up_weekly}}</span>
+                                            {% endif %}
+                                        {% endif %}
                                     </div>
                                 </td>
 
@@ -146,9 +159,6 @@
                             </td>
                             <td>
                                 {{ keyword.created_at }}
-                            </td>
-                            <td>
-                                {{ keyword.rank }}
                             </td>
                             <td>
                                 <form action="" method="POST">        

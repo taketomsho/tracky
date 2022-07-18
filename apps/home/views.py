@@ -12,6 +12,8 @@ from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.shortcuts import redirect, render, resolve_url
 from django.views import generic
 from django.views.generic.list import ListView
+from django.db.models.functions import Rank as Ranking
+from django.db.models import F, Window
 
 import pandas as pd
 
@@ -54,10 +56,10 @@ class DashBoardView(LoginRequiredMixin,ListView):
     template_name = 'home/dashboard.html'
     model = Keyword
 
+
     def get_queryset(self):
-        domain_list = Domain.objects.filter(user = self.request.user)
-        keyword_list = Keyword.objects.filter(domain__in = domain_list)
-        queryset = Rank.objects.filter(keyword__in = keyword_list)
+        today = datetime.date.today()
+        queryset = Rank.objects.filter(date = today)
         return queryset
 
     def get_context_data(self):
@@ -66,9 +68,6 @@ class DashBoardView(LoginRequiredMixin,ListView):
         keyword_list = Keyword.objects.filter(domain__in = domain_list)
         context['domain_list'] = domain_list
         context['keyword_list'] = keyword_list
-
-        for keyword in keyword_list:
-            rank_list = Rank.objects.filter(keyword = keyword)
 
         return context
     
