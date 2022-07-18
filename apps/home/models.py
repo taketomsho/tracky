@@ -45,6 +45,7 @@ class Rank(models.Model):
     url = models.CharField(max_length=500, null=True)
     date = models.DateField(null=True)
     rank = models.IntegerField(null=True)
+    up_weekly = models.IntegerField(null=True)
     class Meta:
         constraints = [
             models.UniqueConstraint(

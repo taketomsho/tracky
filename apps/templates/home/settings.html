@@ -30,17 +30,33 @@
                         </div>
                     </div>
                 </div>
-                <form>
+                <form method="POST">
+                    {% csrf_token %}
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <div>
-                                <label for="first_name">ニックネーム</label>
-                                <input class="form-control" id="first_name" type="text" placeholder="ニックネームを入力" value="{{ request.user.nick_name }}" required>
+
+                            <div class="form-group mb-4">
+                                <label for="nick_name">ニックネーム</label>
+                                <p>現在以下のニックネームで登録されています。変更したい場合はニックネームを修正し、「ニックネームを変更」ボタンを押してください。</p>
+                                <div class="input-group">
+                                    {{ form.nick_name }}
+                                </div>  
+                                <span class="text-error">{{ form.nick_name.errors }}</span>
                             </div>
+                            
+                            <p>
+                                {% if form.errors %}
+                                    {{ form.non_field_errors }}
+                                {% endif %}
+                            </p> 
+        
                         </div>
                     </div>
+
+
+
                     <div class="mt-3">
-                        <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">保存</button>
+                        <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">ニックネームを変更</button>
                     </div>
                 </form>
             </div>
@@ -69,51 +85,9 @@
                 </div>
             </div>
 
-            <div class="card card-body border-0 shadow mb-4">
-                <h2 class="h5 mb-4">通知</h2>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item d-flex align-items-center justify-content-between px-0 border-bottom">
-                        <div>
-                            <h3 class="h6 mb-1">Company News</h3>
-                            <p class="small pe-4">Get Rocket news, announcements, and product updates</p>
-                        </div>
-                        <div>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="user-notification-1">
-                                <label class="form-check-label" for="user-notification-1"></label>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="list-group-item d-flex align-items-center justify-content-between px-0 border-bottom">
-                        <div>
-                            <h3 class="h6 mb-1">Account Activity</h3>
-                            <p class="small pe-4">Get important notifications about you or activity you've missed</p>
-                        </div>
-                        <div>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="user-notification-2" checked>
-                                <label class="form-check-label" for="user-notification-2"></label>
-                            </div>                                            
-                        </div>
-                    </li>
-                    <li class="list-group-item d-flex align-items-center justify-content-between px-0">
-                        <div>
-                            <h3 class="h6 mb-1">Meetups Near You</h3>
-                            <p class="small pe-4">Get an email when a Dribbble Meetup is posted close to my location</p>
-                        </div>
-                        <div>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="user-notification-3" checked>
-                                <label class="form-check-label" for="user-notification-3"></label>
-                            </div> 
-                        </div>
-                    </li>
-                </ul>
-            </div>
 
             <div class="card card-body border-0 shadow mb-4 mb-xl-0">
                 <h2 class="h5 mb-4">退会処理</h2>
-                <p>本当に退会しますか？</p>
                 <div class="mt-3">
                     <a href="{% url 'withdraw' %}">
                         <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">退会する</button>

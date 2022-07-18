@@ -84,15 +84,15 @@
                                     <!-- End of Form -->
                                     <div class="mb-4">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="remember">
-                                            <label class="form-check-label fw-normal mb-0" for="remember">
-                                                <a href="#" class="fw-bold">規約と条件</a>に同意する
+                                            <input class="form-check-input" type="checkbox" value="" name="agree">
+                                            <label class="form-check-label fw-normal mb-0" for="agree">
+                                                <a href="https://www.ai-tracky.com/usage_rule/" class="fw-bold">規約と条件</a>に同意する
                                             </label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="d-grid">
-                                    <button type="submit" name="register" class="btn btn-gray-800">サインアップ</button>
+                                    <button type="submit" name="register" id="submitButton" class="btn btn-gray-800">サインアップ</button>
                                 </div>
                             </form>
                             <br />
@@ -126,6 +126,29 @@
         </section>
     </main>
 
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function(event) {
+            const targetButton = document.getElementById('submitButton');
+            const triggerCheckbox = document.querySelector('input[name="agree"]');
+          
+            targetButton.disabled = true;
+            targetButton.classList.add('is-inactive');
+          
+            triggerCheckbox.addEventListener('change', function() {
+              if (this.checked) {
+                targetButton.disabled = false;
+                targetButton.classList.remove('is-inactive');
+                targetButton.classList.add('is-active');
+              } else {
+                targetButton.disabled = true;
+                targetButton.classList.remove('is-active');
+                targetButton.classList.add('is-inactive');
+              }
+            }, false);
+          }, false);
+    </script>
+    
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->

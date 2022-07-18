@@ -7,11 +7,13 @@ from django import template
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from django.urls import reverse
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.urls import reverse,reverse_lazy
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.shortcuts import redirect, render, resolve_url
 from django.views import generic
 from django.views.generic.list import ListView
+from django.db.models.functions import Rank as Ranking
+from django.db.models import F, Window
 
 import pandas as pd
 from rq import Queue
@@ -20,21 +22,15 @@ from rq.job import Job
 from logging import getLogger
 
 from .models import Keyword, Domain, Rank
-from .forms import RegisterDomainForm, RegisterKeywordForm, AnalysisForm
+from apps.authentication.forms import NicknameForm
 from .scr_score import Scraper
+from .forms import RegisterDomainForm, RegisterKeywordForm, AnalysisForm
 import datetime
 
 logger = getLogger(__name__)
 
 
-class OnlyYouMixin(UserPassesTestMixin):
-    raise_exception = True
-
-    def test_func(self):
-        user = self.request.user
-        return user.pk == self.kwargs['pk'] or user.is_superuser
-
-class DomainUpdate(OnlyYouMixin, generic.CreateView):
+class DomainCreate(LoginRequiredMixin,generic.CreateView):
     model = Domain
     form_class = RegisterDomainForm
     template_name = 'home/domain_form.html'
@@ -47,53 +43,78 @@ class DomainUpdate(OnlyYouMixin, generic.CreateView):
     def form_valid(self, form):
         """ドメインの登録"""
         domain = form.save(commit=False)
-        domain.user_id = self.kwargs['pk']
+        domain.user = self.request.user
         try:
             domain.save()
-            return redirect('home:dashboard', pk=self.kwargs['pk'])
+            return redirect('home:dashboard')
         except:
-            return redirect('home:dashboard', pk=self.kwargs['pk'])
+            return redirect('home:dashboard')
 
-        
 
-class DashBoardView(OnlyYouMixin, ListView):
+
+
+
+class DashBoardView(LoginRequiredMixin,ListView):
     template_name = 'home/dashboard.html'
-    model = Rank
-    queryset = Rank.objects.all()
+    model = Keyword
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        domain = Domain.objects.filter(user=self.kwargs['pk'])
-        keyword = Keyword.objects.filter(domain__in=domain)
-        # rank = Rank.objects.filter(user=self.kwargs['pk'])
-        context["domain"] = domain
-        context["keyword"] = keyword
 
-        # 日付を1週間分取得
-        # date_index = pd.date_range(today, periods=7, freq="D")
-        date_list = [datetime.date.today() - datetime.timedelta(days=i) for i in range(10)]
-        context["date_list"] = date_list
-        context["today"] = datetime.date.today()
-            
+    def get_queryset(self):
+        today = datetime.date.today()
+        queryset = Rank.objects.filter(date = today)
+        return queryset
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        domain_list = Domain.objects.filter(user = self.request.user)
+        keyword_list = Keyword.objects.filter(domain__in = domain_list)
+        context['domain_list'] = domain_list
+        context['keyword_list'] = keyword_list
+
+        return context
+    
+def delete(self, request, **kwargs):
+    # まず最初にrankモデルのpkを取得する
+    rank_pks = request.POST.getlist('delete_keyword')  # <input type="checkbox" name="delete_keyword"のnameに対応
+    rank = Rank.objects.filter(pk__in=rank_pks)
+    # 取得したrankモデルを元にrankに紐づくキーワードを特定
+    keyword_list = []
+    for i in rank:
+        keyword_list.append(i.keyword)
+    # キーワードを削除
+    Keyword.objects.filter(name__in=keyword_list).delete()
+    # ドメインの場合はそのまま削除
+    domain_pks = request.POST.getlist('delete_domain')  # <input type="checkbox" name="delete_domain"のnameに対応
+    Domain.objects.filter(pk__in=domain_pks).delete()
+
+    return redirect('dashboard', pk=self.kwargs['pk'])
+
+class SettingsView(LoginRequiredMixin, generic.FormView):
+    form_class = NicknameForm
+    template_name = 'home/settings.html'
+    success_url = reverse_lazy('home:settings')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['nick_name'] = self.request.user.nick_name
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['segment'] = "settings"
         return context
 
-    def post(self, request, **kwargs):
-        # まず最初にrankモデルのpkを取得する
-        rank_pks = request.POST.getlist('delete_keyword')  # <input type="checkbox" name="delete_keyword"のnameに対応
-        rank = Rank.objects.filter(pk__in=rank_pks)
-        # 取得したrankモデルを元にrankに紐づくキーワードを特定
-        keyword_list = []
-        for i in rank:
-            keyword_list.append(i.keyword)
-        # キーワードを削除
-        Keyword.objects.filter(name__in=keyword_list).delete()
-        # ドメインの場合はそのまま削除
-        domain_pks = request.POST.getlist('delete_domain')  # <input type="checkbox" name="delete_domain"のnameに対応
-        Domain.objects.filter(pk__in=domain_pks).delete()
+    def form_valid(self, form):
+        
+        user = self.request.user
+        user.nick_name = form.cleaned_data.get('nick_name')
+        user.save()
+        return super().form_valid(form)
 
-        return redirect('home:dashboard', pk=self.kwargs['pk'])
+    def get_success_url(self):
+        return reverse_lazy('home:settings')
 
-class KeywordUpdate(OnlyYouMixin, generic.CreateView):
+class KeywordCreate(LoginRequiredMixin, generic.CreateView):
     model = Keyword
     form_class = RegisterKeywordForm
     template_name = 'home/keyword_form.html'
@@ -106,7 +127,7 @@ class KeywordUpdate(OnlyYouMixin, generic.CreateView):
     def form_valid(self, form):
         """キーワードの登録"""
         keyword = form.save(commit=False)
-        keyword.user_id = self.kwargs['pk']
+        keyword.user = self.request.user
         today = datetime.date.today()
         
         try:
@@ -114,9 +135,9 @@ class KeywordUpdate(OnlyYouMixin, generic.CreateView):
             keyword.save()
             rank.save() 
            
-            return redirect('home:dashboard', pk=self.kwargs['pk'])
+            return redirect('dashboard')
         except:
-            return redirect('home:dashboard', pk=self.kwargs['pk'])
+            return redirect('dashboard')
 
 
 ### スコアの算出用 ###
