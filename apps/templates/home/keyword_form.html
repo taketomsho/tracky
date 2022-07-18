@@ -10,7 +10,7 @@
 {% block content %}
 
     <!-- 左側、ログインエリア -->
-    <form action="{% url 'keyword_update' user.pk%}" method="POST">
+    <form action="{% url 'home:keyword_update' user.pk%}" method="POST">
         {{ form.non_field_errors }}
 
         {% for field in form %}
@@ -34,7 +34,7 @@
     </form>
 
     <div class="my-5">
-      <a href="{% url 'dashboard' user.pk%}"><u>ダッシュボードへ</u></a>
+      <a href="{% url 'home:dashboard' user.pk%}"><u>ダッシュボードへ</u></a>
     </div>
 {% endblock %}
 

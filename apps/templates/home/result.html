@@ -1,11 +1,18 @@
-{% extends "layouts/base.html" %}
-{% load boost %}
-
+{% extends "layouts/base-fullscreen.html" %}
 
 {% block content %}
-<div class="text-center">
-<h1>分析結果</h1>
-</div>
+
+{% load boost %}
+
+<section class="section-header overflow-hidden pt-1 pt-lg-3 pb-3 bg-primary text-white">
+  <div class="container">
+      <div class="row">
+          <div class="col-12 text-center">
+              <h1 class="fw-bolder">分析結果</h1>
+          </div>
+      </div>
+  </div>
+</section>
 
 <div class="form-group">
   <div class="text-center mt-3">
@@ -54,10 +61,10 @@
     <p class="h6">以下の各項目のレポートを参考に記事をリライトしてみましょう。</p>
 </div>
 
-<h2 class="leftcolor-blue">文字数</h2>
+<h2 class="h2-type1 my-5">文字数</h2>
 
 <div class="container">
-  <table class="table table-sm ">
+  <table class="table table-sm table-type1 ">
     <thead>
     <tr>
       <th scope="col">統計値</th>
@@ -95,7 +102,7 @@
   </table>
 </div>
 
-<h3>タイトルの文字数</h3>
+<h3 class="h3-type1">タイトルの文字数</h3>
 
 {% if data.title.deviation < 0 %}
   <p class="advice my-5 h6">タイトル：あなたの記事は上位記事の平均と比較して<b>{{data.title.deviation}}</b>文字です。文字数を増やしましょう！</p>
@@ -107,7 +114,7 @@
 <p><a class="h6" href="https://bellcurve.jp/statistics/course/5220.html">※参考：レポート（箱ひげ図）の読み方はこちら</a></p>
 <canvas id="chart_titles" height="100"></canvas>
 
-<h3>メタディスクリプションの文字数</h3>
+<h3 class="h3-type1">メタディスクリプションの文字数</h3>
 
 {% if data.meta.deviation < 0 %}
   <p class="advice my-5 h6">メタディスクリプション：あなたの記事は上位記事の平均と比較して<b>{{data.meta.deviation}}</b>文字です。文字数を増やしましょう！</p>
@@ -118,7 +125,7 @@
 {% endif %}
 <canvas id="chart_metas" height="100"></canvas>
 
-<h3>本文の文字数</h3>
+<h3 class="h3-type1">本文の文字数</h3>
 
 {% if data.body.deviation < 0 %}
   <p class="advice my-5 h6">本文：あなたの記事は上位記事の平均と比較して<b>{{data.body.deviation}}</b>文字です。文字数を増やしましょう！</p>
@@ -129,7 +136,7 @@
 {% endif %}
 <canvas id="chart_body" height="100"></canvas>
 
-<h2>本文に含まれるキーワード数</h2>
+<h2 class="h2-type1 my-5">本文に含まれるキーワード数</h2>
 
 <table class="table table-sm">
   <thead>
@@ -170,7 +177,7 @@
 
 <!-- djangoの記法でzipで複数配列からの取り出しを行っている -->
 {% for keyword, deviation in data.body_keyword.keyword_list|zip:data.body_keyword.deviation %}
-<h3>本文に含まれる「{{keyword}}」の数</h3>
+<h3 class="h3-type1">本文に含まれる「{{keyword}}」の数</h3>
 {% if deviation < 0 %}
   <p class="advice my-5 h6">{{keyword}}の数：あなたの記事は上位記事の平均と比較して<b>{{deviation}}</b>個です。本文に含まれるキーワード数を増やしましょう！</p>
 {% elif deviation > 0 %}
@@ -181,8 +188,8 @@
 {% endfor %}
 
 
-<h2>見出し数</h2>
-<table class="table table-sm">
+<h2 class="h2-type1 my-5">見出し数</h2>
+<table class="table table-sm table-type1">
   <thead>
   <tr>
     <th scope="col">統計値</th>
@@ -218,7 +225,7 @@
   </tr>
   </tbody>
 </table>
-<h3>H2見出しの数</h3>
+<h3 class="h3-type1">H2見出しの数</h3>
 
 {% if data.h2.deviation < 0 %}
   <p class="advice my-5 h6">H2見出し：あなたの記事は上位記事の平均と比較して<b>{{data.h2.deviation}}</b>個です。見出しを増やしましょう！</p>
@@ -230,7 +237,7 @@
 
 <canvas id="chart_h2" height=100></canvas>
 
-<h3>H3見出しの数</h3>
+<h3 class="h3-type1">H3見出しの数</h3>
 {% if data.h3.deviation < 0 %}
   <p class="advice my-5 h6">H3見出し：あなたの記事は上位記事の平均と比較して<b>{{data.h3.deviation}}</b>個です。見出しを増やしましょう！</p>
 {% elif data.h3.deviation > 0 %}
@@ -240,7 +247,7 @@
 {% endif %}
 <canvas id="chart_h3" height=100></canvas>
 
-<h3>H4見出しの数</h3>
+<h3 class="h3-type1">H4見出しの数</h3>
 
 {% if data.h4.deviation < 0 %}
   <p class="advice my-5 h6">H4見出し：あなたの記事は上位記事の平均と比較して<b>{{data.h4.deviation}}</b>個です。見出しを増やしましょう！</p>
@@ -252,9 +259,9 @@
 <canvas id="chart_h4" height=100></canvas>
 
 
-<h2>画像</h2>
+<h2 class="h2-type1 my-5">画像</h2>
 <p class="h6">※画像はリンク付きではない画像のみを集計しております。重複している画像は1つにカウントされます</a></p>
-<table class="table table-sm">
+<table class="table table-sm table-type1">
   <thead>
   <tr>
     <th scope="col">統計値</th>
@@ -280,7 +287,7 @@
   </tr>
   </tbody>
 </table>
-<h3>画像数</h3>
+<h3 class="h3-type1">画像数</h3>
 
 
 {% if data.img.deviation < 0 %}
@@ -292,9 +299,9 @@
 {% endif %}
 <canvas id="chart_img" height="100"></canvas>
 
-<h2>リンク数</h2>
+<h2 class="h2-type1 my-5">リンク数</h2>
 
-<table class="table table-sm">
+<table class="table table-sm table-type1">
   <thead>
   <tr>
     <th scope="col">統計値</th>
@@ -325,7 +332,7 @@
   </tr>
   </tbody>
 </table>
-<h3>内部リンクの数</h3>
+<h3 class="h3-type1">内部リンクの数</h3>
 
 {% if data.inner_link.deviation < 0 %}
   <p class="advice my-5 h6">内部リンク：あなたの記事は上位記事の平均と比較して<b>{{data.inner_link.deviation}}</b>個です。リンクを増やしましょう！</p>
@@ -337,7 +344,7 @@
 
 <canvas id="chart_inner_link" height=100></canvas>
 
-<h3>外部への発リンクの数</h3>
+<h3 class="h3-type1">外部への発リンクの数</h3>
 
 {% if data.outer_link.deviation < 0 %}
   <p class="advice my-5 h6">外部への発リンク：あなたの記事は上位記事の平均と比較して<b>{{data.outer_link.deviation}}</b>個です。リンクを増やしましょう！</p>
@@ -349,9 +356,9 @@
 
 <canvas id="chart_outer_link" height=100></canvas>
 
-<h2>記事の新しさ</h2>
+<h2 class="h2-type1">記事の新しさ</h2>
 
-<table class="table table-sm">
+<table class="table table-sm table-type1">
   <thead>
   <tr>
     <th scope="col">統計値</th>
@@ -378,7 +385,7 @@
   </tbody>
 </table>
 
-<h3>何日前に更新されているか</h3>
+<h3 class="h3-type1">何日前に更新されているか</h3>
 <p>この指標はArticle構造化データを取得し判定しています。<a href="https://developers.google.com/search/docs/advanced/structured-data/article?hl=ja">※Article構造化データとは</a></p>
 
 {% if data.freshness.max == "解析不能" %}
@@ -397,7 +404,7 @@
 <canvas id="chart_freshness" height=100></canvas>
 
 <div class="text-center my-5">
-  <a class="btn btn-info" href="{% url 'home:index' %}" role="button">ホームに戻る</a>
+  <a class="btn btn-secondary d-inline-flex align-items-center me-4" href="{% url 'home:index' %}" role="button">ホームに戻る</a>
 </div>
 
   <script>
@@ -416,17 +423,17 @@
                 {
                     label: "評価",
                     //背景色
-                    backgroundColor: "rgb(45,165,247, 0.5)",
+                    backgroundColor: "rgb(240,188,115, 0.5)",
                     //枠線の色
-                    borderColor: "rgb(45,165,247)",
+                    borderColor: "rgb(240,188,115)",
                     //結合点の背景色
-                    pointBackgroundColor: "rgb(45,165,247)",
+                    pointBackgroundColor: "rgb(240,188,115)",
                     //結合点の枠線の色
                     pointBorderColor: "#fff",
                     //結合点の背景色（ホバ時）
                     pointHoverBackgroundColor: "#fff",
                     //結合点の枠線の色（ホバー時）
-                    pointHoverBorderColor: "rgb(45,165,247)",
+                    pointHoverBorderColor: "rgb(240,188,115)",
                     //結合点より外でマウスホバーを認識する範囲（ピクセル単位）
                     hitRadius: 5,
                     //グラフのデータ
@@ -455,8 +462,8 @@
       labels: [''],
       datasets: [{
         label: '文字数',
-        backgroundColor: 'rgba(0,0,255,0.5)',
-        borderColor: 'blue',
+        backgroundColor: 'rgba(240,188,115,0.5)',
+        borderColor: 'rgba(240,188,115)',
         borderWidth: 1,
         outlierRadius: 3,
         itemRadius: 3,
@@ -489,8 +496,8 @@
       labels: [''],
       datasets: [{
         label: '文字数',
-        backgroundColor: 'rgba(0,0,255,0.5)',
-        borderColor: 'blue',
+        backgroundColor: 'rgba(240,188,115,0.5)',
+        borderColor: 'rgba(240,188,115)',
         borderWidth: 1,
         outlierRadius: 3,
         itemRadius: 3,
@@ -524,8 +531,8 @@
       labels: [''],
       datasets: [{
         label: '文字数',
-        backgroundColor: 'rgba(0,0,255,0.5)',
-        borderColor: 'blue',
+        backgroundColor: 'rgba(240,188,115,0.5)',
+        borderColor: 'rgba(240,188,115)',
         borderWidth: 1,
         outlierRadius: 3,
         itemRadius: 3,
@@ -560,8 +567,8 @@
         labels: [''],
         datasets: [{
           label: '個数',
-          backgroundColor:  'rgba(0,0,255,0.5)',
-          borderColor: 'blue',
+          backgroundColor:  'rgba(240,188,115,0.5)',
+          borderColor: 'rgba(240,188,115)',
           borderWidth: 1,
           outlierRadius: 3,
           itemRadius: 3,
@@ -595,8 +602,8 @@
         labels: [''],
         datasets: [{
           label: '個数',
-          backgroundColor:  'rgba(0,0,255,0.5)',
-          borderColor: 'blue',
+          backgroundColor:  'rgba(240,188,115,0.5)',
+          borderColor: 'rgba(240,188,115)',
           borderWidth: 1,
           outlierRadius: 3,
           itemRadius: 3,
@@ -630,8 +637,8 @@
         labels: [''],
         datasets: [{
           label: '個数',
-          backgroundColor:  'rgba(0,0,255,0.5)',
-          borderColor: 'blue',
+          backgroundColor:  'rgba(240,188,115,0.5)',
+          borderColor: 'rgba(240,188,115)',
           borderWidth: 1,
           outlierRadius: 3,
           itemRadius: 3,
@@ -666,8 +673,8 @@
         labels: [''],
         datasets: [{
           label: '個数',
-          backgroundColor:  'rgba(0,0,255,0.5)',
-          borderColor: 'blue',
+          backgroundColor:  'rgba(240,188,115,0.5)',
+          borderColor: 'rgba(240,188,115)',
           borderWidth: 1,
           outlierRadius: 3,
           itemRadius: 3,
@@ -702,8 +709,8 @@
         labels: [''],
         datasets: [{
           label: '個数',
-          backgroundColor:  'rgba(0,0,255,0.5)',
-          borderColor: 'blue',
+          backgroundColor:  'rgba(240,188,115,0.5)',
+          borderColor: 'rgba(240,188,115)',
           borderWidth: 1,
           outlierRadius: 3,
           itemRadius: 3,
@@ -737,8 +744,8 @@
         labels: [''],
         datasets: [{
           label: '個数',
-          backgroundColor:  'rgba(0,0,255,0.5)',
-          borderColor: 'blue',
+          backgroundColor:  'rgba(240,188,115,0.5)',
+          borderColor: 'rgba(240,188,115)',
           borderWidth: 1,
           outlierRadius: 3,
           itemRadius: 3,
@@ -772,8 +779,8 @@
         labels: [''],
         datasets: [{
           label: 'N日前',
-          backgroundColor:  'rgba(0,0,255,0.5)',
-          borderColor: 'blue',
+          backgroundColor:  'rgba(240,188,115,0.5)',
+          borderColor: 'rgba(240,188,115)',
           borderWidth: 1,
           outlierRadius: 3,
           itemRadius: 3,
@@ -805,6 +812,5 @@
 
 
   </script>
-
 
 {% endblock %}

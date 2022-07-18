@@ -56,9 +56,9 @@ class DomainUpdate(OnlyYouMixin, generic.CreateView):
         domain.user_id = self.kwargs['pk']
         try:
             domain.save()
-            return redirect('dashboard', pk=self.kwargs['pk'])
+            return redirect('home:dashboard', pk=self.kwargs['pk'])
         except:
-            return redirect('dashboard', pk=self.kwargs['pk'])
+            return redirect('home:dashboard', pk=self.kwargs['pk'])
 
         
 
@@ -97,7 +97,7 @@ class DashBoardView(OnlyYouMixin, ListView):
         domain_pks = request.POST.getlist('delete_domain')  # <input type="checkbox" name="delete_domain"のnameに対応
         Domain.objects.filter(pk__in=domain_pks).delete()
 
-        return redirect('dashboard', pk=self.kwargs['pk'])
+        return redirect('home:dashboard', pk=self.kwargs['pk'])
 
 class KeywordUpdate(OnlyYouMixin, generic.CreateView):
     model = Keyword
@@ -120,18 +120,9 @@ class KeywordUpdate(OnlyYouMixin, generic.CreateView):
             keyword.save()
             rank.save() 
            
-            return redirect('dashboard', pk=self.kwargs['pk'])
+            return redirect('home:dashboard', pk=self.kwargs['pk'])
         except:
-            return redirect('dashboard', pk=self.kwargs['pk'])
-
-
-# class KeywordDelete(generic.ListView):
-#     model = Keyword
-
-#     def post(self, request):
-#         keyword_pks = request.POST.getlist('delete')  # <input type="checkbox" name="delete"のnameに対応
-#         Keyword.objects.filter(pk__in=keyword_pks).delete()
-#         return redirect('dashboard', pk=self.kwargs['pk'])
+            return redirect('home:dashboard', pk=self.kwargs['pk'])
 
 
 ### スコアの算出用 ###
@@ -197,6 +188,7 @@ def pages(request):
     html_template = loader.get_template('home/' + load_template)
     return HttpResponse(html_template.render(context, request))
 
+    # TODO 元々Voltにあった404と500の処理をどうするか
     # except template.TemplateDoesNotExist:
 
     #     html_template = loader.get_template('home/page-404.html')
