@@ -9,7 +9,7 @@
 {% block content %}
 
  <!-- 左側、ログインエリア -->
- <form action="{% url 'domain_create'%}" method="POST">
+ <form action="{% url 'home:domain_create'%}" method="POST">
     {{ form.non_field_errors }}
 
     {% for field in form %}
@@ -30,7 +30,7 @@
 </form>
 
 <div class="my-5">
-  <a href="{% url 'dashboard'%}"><u>ダッシュボードへ</u></a>
+  <a href="{% url 'home:dashboard'%}"><u>ダッシュボードへ</u></a>
 </div>
 
 

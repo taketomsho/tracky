@@ -1,0 +1,16 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block content %}
+
+<div id="loading">
+  <div id="loading-main"></div>
+  <div class="my-5 text-center">分析終了まで少々お待ち下さい</div>
+</div>
+
+<script language="javascript" type="text/javascript">
+  setTimeout(function () {
+    location.reload();
+  }, 3500);
+</script>
+
+{% endblock %}

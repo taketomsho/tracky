@@ -16,17 +16,19 @@ from django.db.models.functions import Rank as Ranking
 from django.db.models import F, Window
 
 import pandas as pd
+from rq import Queue
+from worker import conn
+from rq.job import Job
+from logging import getLogger
 
 from .models import Keyword, Domain, Rank
-from .forms import RegisterDomainForm, RegisterKeywordForm
 from apps.authentication.forms import NicknameForm
+from .scr_score import Scraper
+from .forms import RegisterDomainForm, RegisterKeywordForm, AnalysisForm
 import datetime
 
-def index(request):
-    context = {'segment': 'index'}
+logger = getLogger(__name__)
 
-    html_template = loader.get_template('home/index.html')
-    return HttpResponse(html_template.render(context, request))
 
 class DomainCreate(LoginRequiredMixin,generic.CreateView):
     model = Domain
@@ -44,9 +46,9 @@ class DomainCreate(LoginRequiredMixin,generic.CreateView):
         domain.user = self.request.user
         try:
             domain.save()
-            return redirect('dashboard')
+            return redirect('home:dashboard')
         except:
-            return redirect('dashboard')
+            return redirect('home:dashboard')
 
 
 
@@ -138,6 +140,54 @@ class KeywordCreate(LoginRequiredMixin, generic.CreateView):
             return redirect('dashboard')
 
 
+### スコアの算出用 ###
+class IndexView(generic.edit.FormView):
+    template_name = 'home/index.html'
+    form_class = AnalysisForm
+
+    def form_valid(self, form):
+
+        keyword = form.data.get('keyword')
+        url = form.data.get('url')
+
+        scraper = Scraper(keyword, url)
+        q = Queue(connection=conn, default_timeout=600)
+        data = q.enqueue(scraper.get_result)
+
+        self.success_url = '/' + data.id + '/wait/'
+        return super().form_valid(form)
+
+
+class WaitView(generic.TemplateView):
+    template_name = 'home/wait.html'
+
+    def get(self, request, job_id):
+
+        try:
+            job = Job.fetch(job_id, connection=conn)
+            status = job.get_status()
+
+            if status == 'finished':
+                return render(self.request, 'home/result.html', {
+                    'data': job.result
+                })
+
+            elif status == 'failed':
+                context = {'my_error': job.get_meta()["my_error"]}
+                return render(self.request, 'home/failed.html', context)
+
+            else:
+                context = {
+                    'status': status
+                }
+                return self.render_to_response(context)
+
+        except Exception as e:
+            logger.error(str(e))
+            return render(self.request, 'home/failed.html')
+
+
+
 @login_required(login_url="/login/")
 def pages(request):
     context = {}
@@ -152,5 +202,4 @@ def pages(request):
 
     html_template = loader.get_template('home/' + load_template)
     return HttpResponse(html_template.render(context, request))
-
 
