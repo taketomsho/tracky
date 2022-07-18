@@ -29,7 +29,6 @@ class Domain(models.Model):
 class Keyword(models.Model):
     name = models.CharField(max_length=500)
     domain = models.ForeignKey(Domain, on_delete=CASCADE)
-    # url = models.CharField(max_length=500, null=True) キーワードにurlを持たせてRankからurlを削除するべき？
     class Meta:
         constraints = [
             models.UniqueConstraint(
