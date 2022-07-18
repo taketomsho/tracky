@@ -19065,3 +19065,144 @@ article .h1, article .h2, article .h3, article .h4, article .h5, article .h6 {
   z-index: 9999; }
 
 /*# sourceMappingURL=volt.css.map */
+
+/* 追加したCSS */
+
+
+/*========= LoadingのためのCSS ===============*/
+/* //ローディング部分の回転エフェクト定義 */
+@-webkit-keyframes loading {
+  from {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+@keyframes loading {
+  from {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+/* //ローディング画面の背景部分 */
+#loading {
+  width: 100vw;
+  height: 100vh;
+  background-color: #f6f7f8;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100; }
+
+/* //ローディング回転部分 */
+#loading-main:after, #loading-main:before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin-left: -50%;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  border-radius: 110%; }
+
+#loading-main {
+  display: block;
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 105; }
+  #loading-main:after {
+    -webkit-animation: loading 0.75s linear infinite;
+    animation: loading 0.75s linear infinite;
+    border: 1px solid transparent;
+    border-top-color: #666; }
+  #loading-main:before {
+    border: 1px solid rgba(51, 51, 51, 0.15); }
+
+.h2-type1 {
+  position: relative;
+  padding: 0.6em;
+  background: -webkit-repeating-linear-gradient(-45deg, #fff5df, #fff5df 4px,#ffe4b1 3px, #ffe4b1 8px);
+  background: repeating-linear-gradient(-45deg, #fff5df, #fff5df 4px,#ffe4b1 3px, #ffe4b1 8px);
+  border-radius: 7px;
+}
+
+.h2-type1:after {
+  position: absolute;
+  content: '';
+  top: 100%;
+  left: 30px;
+  border: 15px solid transparent;
+  border-top: 15px solid #ffebbe;
+  width: 0;
+  height: 0;
+}
+
+.h3-type1 {
+  position: relative;
+  background: #ffd98a;
+  padding: 2px 5px 2px 25px;
+  font-size: 20px;
+  color: #474747;
+  border-radius: 0 10px 10px 0;
+}
+
+
+.advice {
+  position: relative;
+  padding: 1rem 2rem;
+  text-align: center;
+  color: #000000;
+  border-radius: 0 10px 10px 10px;
+  background: #EFD8B5;
+}
+
+
+/* テーブルのデザイン変更 */
+table.table-type1{
+  width: 100%;
+  border-collapse: collapse;
+  }
+  
+  table.table-type1 tr *:nth-child(1){
+  background: #f0e68c;
+  }
+
+  table.table-type1 tr *:nth-child(2){
+  background: #ffff00;
+  }
+  
+  table.table-type1 tr *:nth-child(3){
+  background: #ffd700;
+  }
+  
+  table.table-type1 tr *:nth-child(4){
+  background: #ffa500;
+  }
+
+  table.table-type1 tr *:nth-child(5){
+  background: #f4a460;
+  }
+
+  table.table-type1 tr *:nth-child(6){
+    background: #ff8c00;
+    }
+
+  table.table-type1 th,table td{
+  color:black;
+  border:solid 1px white;
+  text-align: center;
+  padding: 10px 0;
+  }  
+
+  /* テーブル内のaタグの背景を消す処理 */
+  table.table-type1 td *:nth-child(1){
+    background: none;
+    color:white;
+    }
+

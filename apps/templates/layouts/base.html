@@ -16,6 +16,7 @@
 
 -->
 <!DOCTYPE html>
+{% load static %}
 <html lang="ja">
 
 <head> 
@@ -64,6 +65,10 @@
 
 <link type="text/css" href="{{ ASSETS_ROOT }}/vendor/notyf/notyf.min.css" rel="stylesheet">
 <link type="text/css" href="{{ ASSETS_ROOT }}/css/volt.css" rel="stylesheet">
+
+<!-- 分析結果用のJS  -->    
+<script src="{% static 'assets/js/Chart.bundle.js' %}"></script>
+<script src="{% static 'assets/js/Chart.BoxPlot.js' %}"></script>
 
 <!-- Specific Page JS goes HERE  -->    
 {% block stylesheets %}{% endblock stylesheets %}

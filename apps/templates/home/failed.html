@@ -1,0 +1,49 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block content %}
+
+
+<div class="text-center">
+  <h1>分析結果</h1>
+</div>
+
+
+<div class="my-5 text-center">
+
+  {% if my_error == "KeywordZeroError" %}
+
+  <p>分析対象として適切ではありません</p>
+  <p>記事の本文にキーワードが含まれていません。記事と関連するキーワードを入力してください。</p>
+
+  {% elif my_error == "FewArticlesError" %}
+  <p>分析に失敗しました。</p>
+  <p>上位記事に情報を取得可能な記事が少なく、分析不能です。ほかのキーワードを試してみましょう。</p>
+
+  {% else %}
+  <p>分析に失敗しました。</p>
+  <p>キーワードやURLを見直してもう一度分析してみましょう。</p>
+
+  {% endif %}
+
+</div>
+
+
+
+
+
+{% for field in form %}
+<div class="form-group">
+  <div class="text-center mt-3">
+    <label for="{{ field.id_for_label }}">{{ field.label_tag }}</label>
+  </div>
+  <div class="alert alert-primary text-center mb-5" role="alert">
+    {{ field.value }}
+  </div>
+</div>
+{% endfor %}
+
+<div class="text-center my-5">
+  <a href="{% url 'home:index' %}">ホームに戻る</a>
+</div>
+
+{% endblock %}

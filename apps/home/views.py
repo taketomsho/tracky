@@ -14,16 +14,18 @@ from django.views import generic
 from django.views.generic.list import ListView
 
 import pandas as pd
+from rq import Queue
+from worker import conn
+from rq.job import Job
+from logging import getLogger
 
 from .models import Keyword, Domain, Rank
-from .forms import RegisterDomainForm, RegisterKeywordForm
+from .forms import RegisterDomainForm, RegisterKeywordForm, AnalysisForm
+from .scr_score import Scraper
 import datetime
 
-def index(request):
-    context = {'segment': 'index'}
+logger = getLogger(__name__)
 
-    html_template = loader.get_template('home/index.html')
-    return HttpResponse(html_template.render(context, request))
 
 class OnlyYouMixin(UserPassesTestMixin):
     raise_exception = True
@@ -48,9 +50,9 @@ class DomainUpdate(OnlyYouMixin, generic.CreateView):
         domain.user_id = self.kwargs['pk']
         try:
             domain.save()
-            return redirect('dashboard', pk=self.kwargs['pk'])
+            return redirect('home:dashboard', pk=self.kwargs['pk'])
         except:
-            return redirect('dashboard', pk=self.kwargs['pk'])
+            return redirect('home:dashboard', pk=self.kwargs['pk'])
 
         
 
@@ -62,14 +64,16 @@ class DashBoardView(OnlyYouMixin, ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         domain = Domain.objects.filter(user=self.kwargs['pk'])
+        keyword = Keyword.objects.filter(domain__in=domain)
         # rank = Rank.objects.filter(user=self.kwargs['pk'])
         context["domain"] = domain
+        context["keyword"] = keyword
 
         # 日付を1週間分取得
         # date_index = pd.date_range(today, periods=7, freq="D")
         date_list = [datetime.date.today() - datetime.timedelta(days=i) for i in range(10)]
-        print(date_list)
         context["date_list"] = date_list
+        context["today"] = datetime.date.today()
             
         return context
 
@@ -87,7 +91,7 @@ class DashBoardView(OnlyYouMixin, ListView):
         domain_pks = request.POST.getlist('delete_domain')  # <input type="checkbox" name="delete_domain"のnameに対応
         Domain.objects.filter(pk__in=domain_pks).delete()
 
-        return redirect('dashboard', pk=self.kwargs['pk'])
+        return redirect('home:dashboard', pk=self.kwargs['pk'])
 
 class KeywordUpdate(OnlyYouMixin, generic.CreateView):
     model = Keyword
@@ -110,17 +114,58 @@ class KeywordUpdate(OnlyYouMixin, generic.CreateView):
             keyword.save()
             rank.save() 
            
-            return redirect('dashboard', pk=self.kwargs['pk'])
+            return redirect('home:dashboard', pk=self.kwargs['pk'])
         except:
-            return redirect('dashboard', pk=self.kwargs['pk'])
+            return redirect('home:dashboard', pk=self.kwargs['pk'])
 
-# class KeywordDelete(generic.ListView):
-#     model = Keyword
 
-#     def post(self, request):
-#         keyword_pks = request.POST.getlist('delete')  # <input type="checkbox" name="delete"のnameに対応
-#         Keyword.objects.filter(pk__in=keyword_pks).delete()
-#         return redirect('dashboard', pk=self.kwargs['pk'])
+### スコアの算出用 ###
+class IndexView(generic.edit.FormView):
+    template_name = 'home/index.html'
+    form_class = AnalysisForm
+
+    def form_valid(self, form):
+
+        keyword = form.data.get('keyword')
+        url = form.data.get('url')
+
+        scraper = Scraper(keyword, url)
+        q = Queue(connection=conn, default_timeout=600)
+        data = q.enqueue(scraper.get_result)
+
+        self.success_url = '/' + data.id + '/wait/'
+        return super().form_valid(form)
+
+
+class WaitView(generic.TemplateView):
+    template_name = 'home/wait.html'
+
+    def get(self, request, job_id):
+
+        try:
+            job = Job.fetch(job_id, connection=conn)
+            status = job.get_status()
+
+            if status == 'finished':
+                return render(self.request, 'home/result.html', {
+                    'data': job.result
+                })
+
+            elif status == 'failed':
+                context = {'my_error': job.get_meta()["my_error"]}
+                return render(self.request, 'home/failed.html', context)
+
+            else:
+                context = {
+                    'status': status
+                }
+                return self.render_to_response(context)
+
+        except Exception as e:
+            logger.error(str(e))
+            return render(self.request, 'home/failed.html')
+
+
 
 @login_required(login_url="/login/")
 def pages(request):
@@ -136,5 +181,4 @@ def pages(request):
 
     html_template = loader.get_template('home/' + load_template)
     return HttpResponse(html_template.render(context, request))
-
 
