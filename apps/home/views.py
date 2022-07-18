@@ -92,7 +92,7 @@ def delete(self, request, **kwargs):
 class SettingsView(LoginRequiredMixin, generic.FormView):
     form_class = NicknameForm
     template_name = 'home/settings.html'
-    success_url = reverse_lazy('settings')
+    success_url = reverse_lazy('home:settings')
 
     def get_initial(self):
         initial = super().get_initial()
@@ -112,7 +112,7 @@ class SettingsView(LoginRequiredMixin, generic.FormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('settings')
+        return reverse_lazy('home:settings')
 
 class KeywordCreate(LoginRequiredMixin, generic.CreateView):
     model = Keyword
