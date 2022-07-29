@@ -73,34 +73,15 @@ class DashBoardView(LoginRequiredMixin,ListView):
 
         return context
 
-
-def domain_delete(request, **kwargs):
-    domain_list = Domain.objects.filter(pk=kwargs['pk'])
+def delete_domains(request, **kwargs):
+    domain_list = Domain.objects.filter(pk__in=request.POST.getlist('delete'))
     domain_list.delete()
-
     return redirect('home:dashboard')
 
-def keyword_delete(request, **kwargs):
-    keyword_list = Keyword.objects.filter(pk=kwargs['pk'])
+def delete_keywords(request, **kwargs):
+    keyword_list = Keyword.objects.filter(pk__in=request.POST.getlist('delete'))
     keyword_list.delete()
-
     return redirect('home:dashboard')
-
-def delete(self, request, **kwargs):
-    # まず最初にrankモデルのpkを取得する
-    rank_pks = request.POST.getlist('delete_keyword')  # <input type="checkbox" name="delete_keyword"のnameに対応
-    rank = Rank.objects.filter(pk__in=rank_pks)
-    # 取得したrankモデルを元にrankに紐づくキーワードを特定
-    keyword_list = []
-    for i in rank:
-        keyword_list.append(i.keyword)
-    # キーワードを削除
-    Keyword.objects.filter(name__in=keyword_list).delete()
-    # ドメインの場合はそのまま削除
-    domain_pks = request.POST.getlist('delete_domain')  # <input type="checkbox" name="delete_domain"のnameに対応
-    Domain.objects.filter(pk__in=domain_pks).delete()
-
-    return redirect('dashboard', pk=self.kwargs['pk'])
 
 class SettingsView(LoginRequiredMixin, generic.FormView):
     form_class = NicknameForm
