@@ -72,7 +72,20 @@ class DashBoardView(LoginRequiredMixin,ListView):
         context['keyword_list'] = keyword_list
 
         return context
-    
+
+
+def domain_delete(request, **kwargs):
+    domain_list = Domain.objects.filter(pk=kwargs['pk'])
+    domain_list.delete()
+
+    return redirect('home:dashboard')
+
+def keyword_delete(request, **kwargs):
+    keyword_list = Keyword.objects.filter(pk=kwargs['pk'])
+    keyword_list.delete()
+
+    return redirect('home:dashboard')
+
 def delete(self, request, **kwargs):
     # まず最初にrankモデルのpkを取得する
     rank_pks = request.POST.getlist('delete_keyword')  # <input type="checkbox" name="delete_keyword"のnameに対応
@@ -135,9 +148,9 @@ class KeywordCreate(LoginRequiredMixin, generic.CreateView):
             keyword.save()
             rank.save() 
            
-            return redirect('dashboard')
+            return redirect('home:dashboard')
         except:
-            return redirect('dashboard')
+            return redirect('home:dashboard')
 
 
 ### スコアの算出用 ###
